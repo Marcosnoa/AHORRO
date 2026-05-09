@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ahorri — Tu plan de ahorro familiar</title>
+<meta name="description" content="Descubre cuánto puede ahorrar tu familia cada mes con un informe personalizado basado en tu situación real.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+<style>
+:root {
+  --blue-dark: #0C447C;
+  --blue-main: #185FA5;
+  --blue-mid: #378ADD;
+  --blue-light: #B5D4F4;
+  --blue-pale: #E6F1FB;
+  --green-dark: #085041;
+  --green-main: #1D9E75;
+  --green-light: #E1F5EE;
+  --amber: #EF9F27;
+  --amber-light: #FAEEDA;
+  --red: #E24B4A;
+  --red-light: #FCEBEB;
+  --gray-900: #1a1a2e;
+  --gray-700: #374151;
+  --gray-500: #6B7280;
+  --gray-300: #D1D5DB;
+  --gray-100: #F3F4F6;
+  --white: #ffffff;
+  --radius: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --shadow: 0 2px 12px rgba(24,95,165,0.10);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--gray-100);
+  color: var(--gray-700);
+  min-height: 100vh;
+}
+.app { max-width: 520px; margin: 0 auto; min-height: 100vh; background: var(--white); }
+
+/* HEADER */
+.app-header {
+  background: var(--blue-main);
+  padding: 20px 24px 28px;
+}
+.app-header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+.logo { font-family: 'DM Serif Display', serif; font-size: 28px; color: var(--white); letter-spacing: -0.5px; }
+.logo span { color: var(--blue-light); }
+.header-badge { background: rgba(255,255,255,0.18); color: var(--white); font-size: 11px; font-weight: 500; border-radius: 99px; padding: 4px 12px; }
+.header-sub { font-size: 13px; color: var(--blue-light); margin-top: 2px; }
+
+/* PROGRESS */
+.progress-wrap { background: rgba(255,255,255,0.2); border-radius: 99px; height: 5px; margin-top: 16px; overflow: hidden; }
+.progress-fill { height: 100%; background: var(--white); border-radius: 99px; transition: width 0.4s ease; }
+
+/* SCREENS */
+.screen { display: none; padding: 24px; }
+.screen.active { display: block; }
+
+/* SPLASH */
+.splash { background: var(--blue-main); min-height: 100vh; display: flex; flex-direction: column; padding: 48px 28px 40px; }
+.splash-logo { font-family: 'DM Serif Display', serif; font-size: 52px; color: var(--white); letter-spacing: -1px; margin-bottom: 8px; }
+.splash-logo span { color: var(--blue-light); }
+.splash-tagline { font-size: 18px; color: var(--blue-light); line-height: 1.5; margin-bottom: 48px; }
+.splash-features { display: flex; flex-direction: column; gap: 14px; margin-bottom: 48px; flex: 1; }
+.splash-feat { display: flex; align-items: flex-start; gap: 14px; background: rgba(255,255,255,0.1); border-radius: var(--radius-lg); padding: 16px; }
+.splash-feat-icon { width: 40px; height: 40px; border-radius: var(--radius); background: rgba(255,255,255,0.15); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.splash-feat-icon i { font-size: 20px; color: var(--white); }
+.splash-feat-title { font-size: 15px; font-weight: 600; color: var(--white); margin-bottom: 3px; }
+.splash-feat-desc { font-size: 13px; color: var(--blue-light); line-height: 1.4; }
+.splash-cta { background: var(--white); color: var(--blue-dark); border: none; border-radius: var(--radius-lg); padding: 16px; font-size: 16px; font-weight: 600; width: 100%; cursor: pointer; font-family: 'DM Sans', sans-serif; margin-bottom: 14px; }
+.splash-cta:hover { background: var(--blue-pale); }
+.splash-login { text-align: center; font-size: 14px; color: var(--blue-light); }
+.splash-login span { color: var(--white); font-weight: 500; cursor: pointer; }
+
+/* STEP LABELS */
+.step-label { font-size: 11px; font-weight: 600; color: var(--blue-main); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px; }
+.step-question { font-size: 20px; font-weight: 600; color: var(--gray-900); margin-bottom: 20px; line-height: 1.3; }
+.step-sub { font-size: 14px; color: var(--gray-500); margin-bottom: 20px; margin-top: -12px; line-height: 1.5; }
+
+/* OPTIONS */
+.options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+.options-col { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+.opt-btn {
+  background: var(--white);
+  border: 1.5px solid var(--gray-300);
+  border-radius: var(--radius-lg);
+  padding: 14px;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.15s;
+  font-family: 'DM Sans', sans-serif;
+}
+.opt-btn:hover { border-color: var(--blue-mid); background: var(--blue-pale); }
+.opt-btn.selected { border-color: var(--blue-main); background: var(--blue-pale); border-width: 2px; }
+.opt-btn .opt-icon { font-size: 22px; color: var(--blue-main); margin-bottom: 6px; display: block; }
+.opt-btn.selected .opt-icon { color: var(--blue-dark); }
+.opt-label { font-size: 14px; font-weight: 600; color: var(--gray-900); }
+.opt-sub { font-size: 12px; color: var(--gray-500); margin-top: 2px; }
+
+/* INPUTS */
+.input-group { margin-bottom: 16px; }
+.input-group label { display: block; font-size: 13px; font-weight: 500; color: var(--gray-700); margin-bottom: 6px; }
+.input-group input, .input-group select {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1.5px solid var(--gray-300);
+  border-radius: var(--radius);
+  font-size: 15px;
+  font-family: 'DM Sans', sans-serif;
+  color: var(--gray-900);
+  background: var(--white);
+  outline: none;
+  transition: border-color 0.15s;
+}
+.input-group input:focus, .input-group select:focus { border-color: var(--blue-main); }
+.input-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+/* CHECKBOXES */
+.check-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
+.check-row {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 14px;
+  border: 1.5px solid var(--gray-300);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.check-row:hover { border-color: var(--blue-mid); background: var(--blue-pale); }
+.check-row input[type=checkbox] { accent-color: var(--blue-main); width: 18px; height: 18px; flex-shrink: 0; }
+.check-row label { font-size: 14px; color: var(--gray-900); cursor: pointer; }
+
+/* MEMBERS */
+.members-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; }
+.member-row {
+  display: grid; grid-template-columns: 1fr 1fr auto;
+  gap: 8px; align-items: center;
+  background: var(--blue-pale);
+  border-radius: var(--radius);
+  padding: 10px 12px;
+}
+.member-row select, .member-row input {
+  border: 1px solid var(--blue-light);
+  border-radius: 8px;
+  padding: 8px 10px;
+  font-size: 13px;
+  font-family: 'DM Sans', sans-serif;
+  color: var(--gray-900);
+  background: var(--white);
+}
+.btn-remove-member { background: none; border: none; color: var(--gray-500); cursor: pointer; font-size: 18px; padding: 4px; }
+.btn-add-member {
+  background: none;
+  border: 1.5px dashed var(--gray-300);
+  border-radius: var(--radius);
+  padding: 12px;
+  font-size: 14px;
+  color: var(--gray-500);
+  cursor: pointer;
+  width: 100%;
+  font-family: 'DM Sans', sans-serif;
+  margin-bottom: 20px;
+  transition: all 0.15s;
+}
+.btn-add-member:hover { border-color: var(--blue-main); color: var(--blue-main); }
+
+/* NAV BUTTONS */
+.nav-row { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; gap: 12px; }
+.btn-back {
+  background: none; border: 1.5px solid var(--gray-300);
+  border-radius: var(--radius); padding: 12px 20px;
+  font-size: 14px; color: var(--gray-500); cursor: pointer;
+  font-family: 'DM Sans', sans-serif; transition: all 0.15s;
+}
+.btn-back:hover { background: var(--gray-100); }
+.btn-next {
+  background: var(--blue-main); color: var(--white);
+  border: none; border-radius: var(--radius);
+  padding: 12px 28px; font-size: 15px; font-weight: 600;
+  cursor: pointer; font-family: 'DM Sans', sans-serif;
+  transition: background 0.15s; flex: 1;
+}
+.btn-next:hover { background: var(--blue-dark); }
+
+/* INFO BOX */
+.info-box {
+  background: var(--blue-pale); border: 1px solid var(--blue-light);
+  border-radius: var(--radius); padding: 12px 14px;
+  font-size: 13px; color: var(--blue-dark); line-height: 1.5;
+  margin-bottom: 16px; display: flex; gap: 8px; align-items: flex-start;
+}
+.info-box i { flex-shrink: 0; font-size: 15px; margin-top: 1px; }
+.km-result {
+  background: var(--blue-pale); border-radius: var(--radius);
+  padding: 12px 14px; margin-top: 12px; margin-bottom: 8px;
+  font-size: 14px; color: var(--blue-dark); display: none;
+}
+.km-result strong { color: var(--blue-main); font-weight: 600; }
+
+/* SUMMARY */
+.summary-card {
+  background: var(--gray-100); border-radius: var(--radius-lg);
+  padding: 16px; margin-bottom: 20px;
+}
+.summary-card h3 { font-size: 15px; font-weight: 600; color: var(--gray-900); margin-bottom: 12px; }
+.summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.summary-item { font-size: 12px; color: var(--gray-500); }
+.summary-item strong { display: block; font-size: 13px; color: var(--gray-900); font-weight: 500; margin-top: 1px; }
+.invisible-preview {
+  background: var(--amber-light); border: 1px solid #FAC775;
+  border-radius: var(--radius-lg); padding: 14px; margin-bottom: 20px;
+}
+.invisible-preview-title { font-size: 13px; font-weight: 600; color: #412402; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+.inv-tags { display: flex; flex-wrap: wrap; gap: 5px; }
+.inv-tag { font-size: 11px; background: var(--white); border: 1px solid #FAC775; border-radius: 99px; padding: 3px 9px; color: #633806; }
+.send-btn {
+  background: var(--blue-main); color: var(--white);
+  border: none; border-radius: var(--radius-lg);
+  padding: 16px; font-size: 16px; font-weight: 600;
+  cursor: pointer; font-family: 'DM Sans', sans-serif;
+  width: 100%; margin-bottom: 10px; transition: background 0.15s;
+}
+.send-btn:hover { background: var(--blue-dark); }
+
+/* LOADING */
+.loading-screen { text-align: center; padding: 60px 24px; }
+.spinner {
+  width: 52px; height: 52px;
+  border: 3px solid var(--blue-pale);
+  border-top-color: var(--blue-main);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin: 0 auto 20px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.loading-screen h2 { font-size: 20px; font-weight: 600; color: var(--gray-900); margin-bottom: 8px; }
+.loading-screen p { font-size: 14px; color: var(--gray-500); line-height: 1.6; }
+.loading-dots { display: flex; justify-content: center; gap: 6px; margin-top: 20px; }
+.loading-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--blue-light); animation: pulse 1.2s ease-in-out infinite; }
+.loading-dot:nth-child(2) { animation-delay: 0.2s; }
+.loading-dot:nth-child(3) { animation-delay: 0.4s; }
+@keyframes pulse { 0%,100%{opacity:0.3;transform:scale(0.8)} 50%{opacity:1;transform:scale(1)} }
+
+/* REPORT */
+.report-section { padding: 24px; }
+.report-hero {
+  background: var(--blue-pale); border: 1px solid var(--blue-light);
+  border-radius: var(--radius-xl); padding: 20px; margin-bottom: 20px; text-align: center;
+}
+.report-hero-label { font-size: 12px; color: var(--blue-main); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 6px; font-weight: 600; }
+.report-hero-amount { font-size: 48px; font-weight: 700; color: var(--blue-dark); line-height: 1; margin-bottom: 4px; }
+.report-hero-sub { font-size: 13px; color: var(--blue-main); }
+.report-content h3 {
+  font-size: 15px; font-weight: 600; color: var(--gray-900);
+  margin: 20px 0 10px; padding-bottom: 6px;
+  border-bottom: 1.5px solid var(--blue-pale);
+}
+.report-content p { font-size: 14px; color: var(--gray-700); line-height: 1.7; margin-bottom: 10px; }
+.report-content ul { padding-left: 18px; margin-bottom: 10px; }
+.report-content li { font-size: 14px; color: var(--gray-700); line-height: 1.6; margin-bottom: 6px; }
+.report-content strong { font-weight: 600; color: var(--gray-900); }
+.report-content .saving-highlight {
+  background: var(--green-light); border: 1px solid #9FE1CB;
+  border-radius: var(--radius); padding: 10px 14px;
+  font-size: 14px; color: var(--green-dark); font-weight: 600;
+  margin: 10px 0;
+}
+.report-content .invisible-box {
+  background: var(--amber-light); border: 1px solid #FAC775;
+  border-radius: var(--radius-lg); padding: 14px; margin: 12px 0;
+}
+.report-content .invisible-box h4 { font-size: 14px; font-weight: 600; color: #412402; margin-bottom: 8px; }
+.report-content .invisible-box p { font-size: 13px; color: #633806; margin-bottom: 0; }
+.btn-restart {
+  background: none; border: 1.5px solid var(--gray-300);
+  border-radius: var(--radius); padding: 12px 20px;
+  font-size: 14px; color: var(--gray-500); cursor: pointer;
+  font-family: 'DM Sans', sans-serif; width: 100%; margin-top: 20px;
+}
+.btn-restart:hover { background: var(--gray-100); }
+.error-box {
+  background: var(--red-light); border: 1px solid #F7C1C1;
+  border-radius: var(--radius); padding: 14px; margin-top: 12px;
+  font-size: 13px; color: #791F1F; display: none;
+}
+
+/* BOTTOM NAV */
+.bottom-nav {
+  border-top: 1px solid var(--gray-100);
+  display: flex; padding: 10px 0 6px;
+  background: var(--white);
+  position: sticky; bottom: 0;
+}
+.bn-item { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px; cursor: pointer; }
+.bn-item i { font-size: 22px; color: var(--gray-300); }
+.bn-item span { font-size: 10px; color: var(--gray-300); font-weight: 500; }
+.bn-item.active i { color: var(--blue-main); }
+.bn-item.active span { color: var(--blue-main); }
+
+/* FREEMIUM LOCK */
+.lock-section {
+  background: var(--gray-100); border: 1.5px dashed var(--gray-300);
+  border-radius: var(--radius-lg); padding: 20px; text-align: center; margin: 16px 0;
+}
+.lock-icon-big { font-size: 32px; color: var(--gray-300); margin-bottom: 10px; }
+.lock-title { font-size: 15px; font-weight: 600; color: var(--gray-700); margin-bottom: 6px; }
+.lock-desc { font-size: 13px; color: var(--gray-500); margin-bottom: 14px; line-height: 1.5; }
+.upgrade-btn {
+  background: var(--blue-main); color: var(--white);
+  border: none; border-radius: var(--radius-lg);
+  padding: 14px 24px; font-size: 15px; font-weight: 600;
+  cursor: pointer; font-family: 'DM Sans', sans-serif; width: 100%;
+}
+.upgrade-btn:hover { background: var(--blue-dark); }
+.upgrade-price { font-size: 12px; color: var(--gray-500); margin-top: 8px; }
+
+/* GASTO BARS */
+.gasto-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+.gasto-row { display: flex; align-items: center; gap: 10px; }
+.gasto-label { font-size: 13px; color: var(--gray-700); width: 130px; flex-shrink: 0; display: flex; align-items: center; gap: 6px; }
+.gasto-bar-wrap { flex: 1; background: var(--gray-100); border-radius: 99px; height: 8px; overflow: hidden; }
+.gasto-bar-fill { height: 100%; border-radius: 99px; }
+.gasto-amount { font-size: 12px; color: var(--gray-500); width: 50px; text-align: right; flex-shrink: 0; font-weight: 500; }
+
+/* METRICS */
+.metrics-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+.metric-card { background: var(--gray-100); border-radius: var(--radius); padding: 14px; }
+.metric-card-label { font-size: 11px; color: var(--gray-500); margin-bottom: 4px; font-weight: 500; }
+.metric-card-val { font-size: 22px; font-weight: 700; color: var(--gray-900); }
+.metric-card-val.blue { color: var(--blue-main); }
+.metric-card-val.green { color: var(--green-main); }
+.metric-card-sub { font-size: 11px; color: var(--gray-500); margin-top: 2px; }
+
+/* UTIL */
+.section-head { font-size: 13px; font-weight: 600; color: var(--gray-900); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.05em; }
+.spacer { height: 16px; }
+
+@media (max-width: 480px) {
+  .options-grid { grid-template-columns: 1fr; }
+  .input-row { grid-template-columns: 1fr; }
+  .metrics-grid { grid-template-columns: 1fr 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="app" id="app">
+
+  <!-- SPLASH -->
+  <div class="splash active" id="screenSplash">
+    <div class="splash-logo">ahorri<span>.</span></div>
+    <div class="splash-tagline">Descubre cuánto puede ahorrar tu familia cada mes</div>
+    <div class="splash-features">
+      <div class="splash-feat">
+        <div class="splash-feat-icon"><i class="ti ti-clipboard-list"></i></div>
+        <div>
+          <div class="splash-feat-title">Cuestionario de 9 pasos</div>
+          <div class="splash-feat-desc">Analizamos tu situación real en 3 minutos, sin complicaciones</div>
+        </div>
+      </div>
+      <div class="splash-feat">
+        <div class="splash-feat-icon"><i class="ti ti-report-analytics"></i></div>
+        <div>
+          <div class="splash-feat-title">Informe con inteligencia artificial</div>
+          <div class="splash-feat-desc">Recomendaciones concretas con nombres reales de supermercados y servicios</div>
+        </div>
+      </div>
+      <div class="splash-feat">
+        <div class="splash-feat-icon"><i class="ti ti-eye-off"></i></div>
+        <div>
+          <div class="splash-feat-title">Gastos invisibles detectados</div>
+          <div class="splash-feat-desc">Los que no ves pero que te cuestan dinero cada mes</div>
+        </div>
+      </div>
+    </div>
+    <button class="splash-cta" onclick="startQuestionnaire()">Empezar gratis <i class="ti ti-arrow-right"></i></button>
+    <div class="splash-login">¿Ya tienes cuenta? <span>Entra aquí</span></div>
+  </div>
+
+  <!-- QUESTIONNAIRE HEADER (shown during steps) -->
+  <div id="questionnaireHeader" style="display:none">
+    <div class="app-header">
+      <div class="app-header-top">
+        <div class="logo">ahorri<span>.</span></div>
+        <span class="header-badge" id="headerBadge">Gratis</span>
+      </div>
+      <div class="header-sub" id="headerSub">Paso 1 de 9</div>
+      <div class="progress-wrap">
+        <div class="progress-fill" id="progressFill" style="width:0%"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 1: Ubicación -->
+  <div class="screen" id="step1">
+    <div class="step-label">Paso 1 de 9 · Ubicación</div>
+    <div class="step-question">¿En qué comunidad autónoma vivís?</div>
+    <div class="input-group">
+      <select id="comunidad">
+        <option value="">Selecciona una comunidad...</option>
+        <option>Andalucía</option><option>Aragón</option><option>Asturias</option>
+        <option>Baleares</option><option>Canarias</option><option>Cantabria</option>
+        <option>Castilla-La Mancha</option><option>Castilla y León</option>
+        <option>Cataluña</option><option>Extremadura</option><option>Galicia</option>
+        <option>La Rioja</option><option>Madrid</option><option>Murcia</option>
+        <option>Navarra</option><option>País Vasco</option><option>Valencia</option>
+        <option>Ceuta</option><option>Melilla</option>
+      </select>
+    </div>
+    <div class="step-question" style="font-size:17px">¿Es ciudad grande, mediana o pueblo?</div>
+    <div class="options-col">
+      <button class="opt-btn" data-group="tamano" data-val="gran ciudad (más de 500.000 hab.)">
+        <span class="opt-icon"><i class="ti ti-building-skyscraper"></i></span>
+        <span class="opt-label">Gran ciudad</span>
+        <span class="opt-sub">Más de 500.000 hab.</span>
+      </button>
+      <button class="opt-btn" data-group="tamano" data-val="ciudad mediana (50.000–500.000 hab.)">
+        <span class="opt-icon"><i class="ti ti-building"></i></span>
+        <span class="opt-label">Ciudad mediana</span>
+        <span class="opt-sub">50.000 – 500.000 hab.</span>
+      </button>
+      <button class="opt-btn" data-group="tamano" data-val="pueblo o zona rural (menos de 50.000 hab.)">
+        <span class="opt-icon"><i class="ti ti-home"></i></span>
+        <span class="opt-label">Pueblo o zona rural</span>
+        <span class="opt-sub">Menos de 50.000 hab.</span>
+      </button>
+    </div>
+    <div class="nav-row">
+      <button class="btn-next" onclick="goNext(1)">Continuar <i class="ti ti-arrow-right"></i></button>
+    </div>
+  </div>
+
+  <!-- STEP 2: Familia -->
+  <div class="screen" id="step2">
+    <div class="step-label">Paso 2 de 9 · Familia</div>
+    <div class="step-question">¿Quiénes forman vuestra unidad familiar?</div>
+    <div class="members-list" id="membersList"></div>
+    <button class="btn-add-member" onclick="addMember()"><i class="ti ti-plus"></i> Añadir miembro de la familia</button>
+    <div class="nav-row">
+      <button class="btn-back" onclick="goBack(2)"><i class="ti ti-arrow-left"></i> Atrás</button>
+      <button class="btn-next" onclick="goNext(2)">Continuar <i class="ti ti-arrow-right"></i></button>
+    </div>
+  </div>
+
+  <!-- STEP 3: Vivienda -->
+  <div class="screen" id="step3">
+    <div class="step-label">Paso 3 de 9 · Vivienda</div>
+    <div class="step-question">¿Cómo es vuestra vivienda?</div>
+    <div class="options-col" style="margin-bottom:14px">
+      <button class="opt-btn" data-group="tipovivienda" data-val="piso en edificio">
+        <span class="opt-icon"><i class="ti ti-building"></i></span>
+        <span class="opt-label">Piso en edificio</span>
+      </button>
+      <button class="opt-btn" data-group="tipovivienda" data-val="casa unifamiliar">
+        <span class="opt-icon"><i class="ti ti-home-2"></i></span>
+        <span class="opt-label">Casa unifamiliar</span>
+      </button>
+      <button class="opt-btn" data-group="tipovivienda" data-val="adosado">
+        <span class="opt-icon"><i class="ti ti-building-community"></i></span>
+        <span class="opt-label">Adosado</span>
+      </button>
+    </div>
+    <div class="input-row">
+      <div class="input-group"><label>Metros cuadrados</label><input type="number" id="metros" placeholder="Ej: 90" min="20"></div>
+      <div class="input-group"><label>Metros de jardín (0 si no tiene)</label><input type="number" id="jardin" placeholder="Ej: 0" min="0"></div>
+    </div>
+    <div class="step-question" style="font-size:17px;margin-top:8px">Situación de la vivienda</div>
+    <div class="options-col">
+      <button class="opt-btn" data-group="hipoteca" data-val="con hipoteca">
+        <span class="opt-icon"><i class="ti ti-file-invoice"></i></span>
+        <span class="opt-label">Con hipoteca</span>
+      </button>
+      <button class="opt-btn" data-group="hipoteca" data-val="de alquiler">
+        <span class="opt-icon"><i class="ti ti-key"></i></span>
+        <span class="opt-label">De alquiler</span>
+      </button>
+      <button class="opt-btn" data-group="hipoteca" data-val="en propiedad sin hipoteca">
+        <span class="opt-icon"><i class="ti ti-check"></i></span>
+        <span class="opt-label">Propia sin cargas</span>
+      </button>
+    </div>
+    <div class="nav-row">
+      <button class="btn-back" onclick="goBack(3)"><i class="ti ti-arrow-left"></i> Atrás</button>
+      <button class="btn-next" onclick="goNext(3)">Continuar <i class="ti ti-arrow-right"></i></button>
+    </div>
+  </div>
+
+  <!-- STEP 4: Alimentación -->
+  <div class="screen" id="step4">
+    <div class="step-label">Paso 4 de 9 · Alimentación</div>
+    <div class="step-question">¿Dónde hacéis habitualmente la compra?</div>
+    <div class="check-list">
+      <div class="check-row"><input type="checkbox" id="s1" value="Mercadona"><label for="s1">Mercadona</label></div>
+      <div class="check-row"><input type="checkbox" id="s2" value="Lidl"><label for="s2">Lidl</label></div>
+      <div class="check-row"><input type="checkbox" id="s3" value="Aldi"><label for="s3">Aldi</label></div>
+      <div class="check-row"><input type="checkbox" id="s4" value="Carrefour"><label for="s4">Carrefour</label></div>
+      <div class="check-row"><input type="checkbox" id="s5" value="Eroski"><label for="s5">Eroski</label></div>
+      <div class="check-row"><input type="checkbox" id="s6" value="El Corte Inglés / Hipercor"><label for="s6">El Corte Inglés / Hipercor</label></div>
+      <div class="check-row"><input type="checkbox" id="s7" value="Mercado local / tiendas de barrio"><label for="s7">Mercado local / tiendas de barrio</label></div>
+      <div class="check-row"><input type="checkbox" id="s8" value="Compra online (Amazon Fresh, Ulabox...)"><label for="s8">Compra online</label></div>
+    </div>
+    <div class="input-group">
+      <label>Gasto aproximado en la compra al mes (€)</label>
+      <input type="number" id="gastoCompra" placeholder="Ej: 600" min="0">
+    </div>
+    <div class="nav-row">
+      <button class="btn-back" onclick="goBack(4)"><i class="ti ti-arrow-left"></i> Atrás</button>
+      <button class="btn-next" onclick="goNext(4)">Continuar <i class="ti ti-arrow-right"></i></button>
+    </div>
+  </div>
+
+  <!-- STEP 5: Restaurantes y trabajo -->
+  <div class="screen" id="step5">
+    <div class="step-label">Paso 5 de 9 · Restaurantes y trabajo</div>
+    <div class="step-question">¿Con qué frecuencia coméis o cenáis fuera?</div>
+    <div class="options-col" style="margin-bottom:20px">
+      <button class="opt-btn" data-group="comerFuera" data-val="casi nunca (1-2 veces al mes)">
+        <span class="opt-icon"><i class="ti ti-home"></i></span>
+        <span class="opt-label">Casi nunca</span>
+        <span class="opt-sub">1–2 veces al mes</span>
+      </button>
+      <button class="opt-btn" data-group="comerFuera" data-val="ocasionalmente (1-2 veces por semana)">
+        <span class="opt-icon"><i class="ti ti-coffee"></i></span>
+        <span class="opt-label">Ocasionalmente</span>
+        <span class="opt-sub">1–2 veces por semana</span>
+      </button>
+      <button class="opt-btn" data-group="comerFuera" data-val="frecuentemente (3-4 veces por semana)">
+        <span class="opt-icon"><i class="ti ti-tools-kitchen-2"></i></span>
+        <span class="opt-label">Frecuentemente</span>
+        <span class="opt-sub">3–4 veces por semana</span>
+      </button>
+      <button class="opt-btn" data-group="comerFuera" data-val="casi a diario">
+        <span class="opt-icon"><i class="ti ti-receipt"></i></span>
+        <span class="opt-label">Casi a diario</span>
+      </button>
+    </div>
+    <div class="step-question" style="font-size:17px">¿Los adultos trabajan fuera de casa?</div>
+    <div class="options-col">
+      <button class="opt-btn" data-group="trabajo" data-val="todos trabajan fuera de casa">
+        <span class="opt-icon"><i class="ti ti-briefcase"></i></span>
+        <span class="opt-label">Todos trabajan fuera</span>
+      </button>
+      <button class="opt-btn" data-group="trabajo" data-val="mixto (algunos en remoto, otros fuera)">
+        <span class="opt-icon"><i class="ti ti-device-laptop"></i></span>
+        <span class="opt-label">Mixto</span>
+        <span class="opt-sub">Algunos en remoto, otros fuera</span>
+      </button>
+      <button class="opt-btn" data-group="trabajo" data-val="todos en remoto o en casa">
+        <span class="opt-icon"><i class="ti ti-home-check"></i></span>
+        <span class="opt-label">Todos en casa o remoto</span>
+      </button>
+    </div>
+    <div class="nav-row">
+      <button class="btn-back" onclick="goBack(5)"><i class="ti ti-arrow-left"></i> Atrás</button>
+      <button class="btn-next" onclick="goNext(5)">Continuar <i class="ti ti-arrow-right"></i></button>
+    </div>
+  </div>
+
+  <!-- STEP 6: Suministros -->
+  <div class="screen" id="step6">
+    <div class="step-label">Paso 6 de 9 · Suministros del hogar</div>
+    <div class="step-question">¿Cuánto pagáis por los suministros?</div>
+    <div class="input-row">
+      <div class="input-group"><label>Luz al mes (€)</label><input type="number" id="luz" placeholder="Ej: 90" min="0"></div>
+      <div class="input-group"><label>Gas / calefacción (€)</label><input type="number" id="gas" placeholder="Ej: 60" min="0"></div>
+    </div>
+    <div class="input-row">
+      <div class="input-group"><label>Internet + móviles (€)</label><input type="number" id="telco" placeholder="Ej: 80" min="0"></div>
+      <div class="input-group"><label>Seguros al mes (€)</label><input type="number" id="seguros" placeholder="Ej: 100" min="0"></div>
+    </div>
+    <div class="nav-row">
+      <button class="btn-back" onclick="goBack(6)"><i class="ti ti-arrow-left"></i> Atrás</button>
+      <button class="btn-next" onclick="goNext(6)">Continuar <i class="ti ti-arrow-right"></i></button>
+    </div>
+  </div>
+
+  <!-- STEP 7: Transporte -->
+  <div class="screen" id="step7">
+    <div class="step-label">Paso 7 de 9 · Transporte</div>
+    <div class="step-question">¿Cómo os desplazáis principalmente?</div>
+    <div class="options-col" style="margin-bottom:20px">
+      <button class="opt-btn" data-group="transporte" data-val="coche de gasolina o diésel">
+        <span class="opt-icon"><i class="ti ti-car"></i></span>
+        <span class="opt-label">Coche gasolina / diésel</span>
+      </button>
+      <button class="opt-btn" data-group="transporte" data-val="coche eléctrico o híbrido">
+        <span class="opt-icon"><i class="ti ti-plug"></i></span>
+        <span class="opt-label">Coche eléctrico o híbrido</span>
+      </button>
+      <button class="opt-btn" data-group="transporte" data-val="transporte público">
+        <span class="opt-icon"><i class="ti ti-bus"></i></span>
+        <span class="opt-label">Transporte público</span>
+      </button>
+      <button class="opt-btn" data-group="transporte" data-val="combinado (coche + transporte público)">
+        <span class="opt-icon"><i class="ti ti-directions"></i></span>
+        <span class="opt-label">Combinado</span>
+      </button>
+    </div>
+    <div class="info-box">
+      <i class="ti ti-calculator"></i>
+      Con estos datos calcularemos exactamente cuánto gastáis en gasolina al mes.
+    </div>
+    <div class="input-row">
+      <div class="input-group"><label>Km al trabajo (solo ida)</label><input type="number" id="kmTrabajo" placeholder="Ej: 20" min="0" oninput="calcKm()"></div>
+      <div class="input-group"><label>Adultos que van en coche</label><input type="number" id="numConductores" placeholder="Ej: 1" min="0" max="5" value="1" oninput="calcKm()"></div>
+    </div>
+    <div class="input-row">
+      <div class="input-group"><label>Días/semana al trabajo</label><input type="number" id="diasTrabajo" placeholder="Ej: 5" min="1" max="7" value="5" oninput="calcKm()"></div>
+      <div class="input-group"><label>Km en fin de semana</label><input type="number" id="kmFinde" placeholder="Ej: 100" min="0" oninput="calcKm()"></div>
+    </div>
+    <div class="km-result" id="kmResult">
+      <i class="ti ti-car"></i> Km estimados/mes: <strong id="kmTotal">—</strong> · Gasto gasolina: <strong id="gastoGas">—</strong>€/mes
+    </div>
+    <div class="nav-row">
+      <button class="btn-back" onclick="goBack(7)"><i class="ti ti-arrow-left"></i> Atrás</button>
+      <button class="btn-next" onclick="goNext(7)">Continuar <i class="ti ti-arrow-right"></i></button>
+    </div>
+  </div>
+
+  <!-- STEP 8: Ocio y extras -->
+  <div class="screen" id="step8">
+    <div class="step-label">Paso 8 de 9 · Ocio y extras</div>
+    <div class="step-question">¿Qué otros gastos tenéis regularmente?</div>
+    <div class="check-list">
+      <div class="check-row"><input type="checkbox" id="o1" value="plataformas de streaming (Netflix, HBO, Disney+)"><label for="o1">Plataformas streaming (Netflix, HBO...)</label></div>
+      <div class="check-row"><input type="checkbox" id="o2" value="gimnasio o clases deportivas"><label for="o2">Gimnasio / clases deportivas</label></div>
+      <div class="check-row"><input type="checkbox" id="o3" value="extraescolares de los hijos"><label for="o3">Extraescolares de los hijos</label></div>
+      <div class="check-row"><input type="checkbox" id="o4" value="colegio privado o concertado"><label for="o4">Colegio privado o concertado</label></div>
+      <div class="check-row"><input type="checkbox" id="o5" value="gastos frecuentes en ropa y moda"><label for="o5">Ropa y moda frecuente</label></div>
+      <div class="check-row"><input type="checkbox" id="o6" value="viajes y escapadas frecuentes"><label for="o6">Viajes y escapadas</label></div>
+      <div class="check-row"><input type="checkbox" id="o7" value="mascotas"><label for="o7">Mascotas</label></div>
+      <div class="check-row"><input type="checkbox" id="o8" value="Amazon Prime u otras suscripciones de compra online"><label for="o8">Amazon Prime / suscripciones compra</label></div>
+    </div>
+    <div class="input-group">
+      <label>Gasto mensual en ocio y extras (€)</label>
+      <input type="number" id="ocio" placeholder="Ej: 300" min="0">
+    </div>
+    <div class="nav-row">
+      <button class="btn-back" onclick="goBack(8)"><i class="ti ti-arrow-left"></i> Atrás</button>
+      <button class="btn-next" onclick="goNext(8)">Continuar <i class="ti ti-arrow-right"></i></button>
+    </div>
+  </div>
+
+  <!-- STEP 9: Ingresos -->
+  <div class="screen" id="step9">
+    <div class="step-label">Paso 9 de 9 · Ingresos</div>
+    <div class="step-question">¿Cuáles son los ingresos netos mensuales de vuestra familia?</div>
+    <div class="options-col" style="margin-bottom:20px">
+      <button class="opt-btn" data-group="ingresos" data-val="menos de 1.500€ netos al mes">
+        <span class="opt-icon"><i class="ti ti-coin"></i></span>
+        <span class="opt-label">Menos de 1.500€</span>
+      </button>
+      <button class="opt-btn" data-group="ingresos" data-val="entre 1.500€ y 2.500€ netos al mes">
+        <span class="opt-icon"><i class="ti ti-coins"></i></span>
+        <span class="opt-label">1.500€ – 2.500€</span>
+      </button>
+      <button class="opt-btn" data-group="ingresos" data-val="entre 2.500€ y 4.000€ netos al mes">
+        <span class="opt-icon"><i class="ti ti-cash"></i></span>
+        <span class="opt-label">2.500€ – 4.000€</span>
+      </button>
+      <button class="opt-btn" data-group="ingresos" data-val="entre 4.000€ y 6.000€ netos al mes">
+        <span class="opt-icon"><i class="ti ti-moneybag"></i></span>
+        <span class="opt-label">4.000€ – 6.000€</span>
+      </button>
+      <button class="opt-btn" data-group="ingresos" data-val="más de 6.000€ netos al mes">
+        <span class="opt-icon"><i class="ti ti-trending-up"></i></span>
+        <span class="opt-label">Más de 6.000€</span>
+      </button>
+    </div>
+    <div class="input-group">
+      <label>Otras deudas mensuales aparte de la hipoteca (€)</label>
+      <input type="number" id="deudas" placeholder="Ej: 0" min="0" value="0">
+    </div>
+    <div id="errorBox" class="error-box"></div>
+    <div class="nav-row">
+      <button class="btn-back" onclick="goBack(9)"><i class="ti ti-arrow-left"></i> Atrás</button>
+      <button class="btn-next" onclick="prepareSubmit()"><i class="ti ti-checklist"></i> Ver resumen</button>
+    </div>
+  </div>
+
+  <!-- STEP 10: Resumen y envío -->
+  <div class="screen" id="step10">
+    <div class="step-label">¡Todo listo!</div>
+    <div class="step-question">Confirma tus datos</div>
+    <div class="summary-card">
+      <h3><i class="ti ti-checklist" style="color:var(--blue-main);margin-right:6px"></i>Resumen de tu situación</h3>
+      <div class="summary-grid" id="summaryGrid"></div>
+    </div>
+    <div class="invisible-preview" id="invisiblePreview">
+      <div class="invisible-preview-title"><i class="ti ti-eye-off"></i>Gastos invisibles que analizaremos</div>
+      <div class="inv-tags" id="invTagsContainer"></div>
+      <p style="font-size:11px;color:#854F0B;margin-top:8px">Detectados automáticamente según tu perfil — aparecerán en tu informe</p>
+    </div>
+    <button class="send-btn" onclick="generateReport()">
+      <i class="ti ti-sparkles"></i> Generar mi informe de ahorro
+    </button>
+    <div class="nav-row" style="margin-top:8px">
+      <button class="btn-back" onclick="goBack(10)" style="width:100%"><i class="ti ti-arrow-left"></i> Modificar datos</button>
+    </div>
+  </div>
+
+  <!-- LOADING -->
+  <div class="screen" id="screenLoading">
+    <div class="loading-screen">
+      <div class="spinner"></div>
+      <h2>Analizando tu situación...</h2>
+      <p>La inteligencia artificial está elaborando tu plan de ahorro personalizado. Esto puede tardar unos segundos.</p>
+      <div class="loading-dots">
+        <div class="loading-dot"></div>
+        <div class="loading-dot"></div>
+        <div class="loading-dot"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- REPORT -->
+  <div class="screen" id="screenReport">
+    <div class="app-header">
+      <div class="app-header-top">
+        <div class="logo">ahorri<span>.</span></div>
+        <span class="header-badge"><i class="ti ti-check"></i> Informe listo</span>
+      </div>
+      <div class="header-sub" id="reportSubtitle">Tu plan de ahorro personalizado</div>
+    </div>
+    <div class="report-section">
+      <div class="report-hero">
+        <div class="report-hero-label">Puedes ahorrar cada mes</div>
+        <div class="report-hero-amount" id="savingAmount">—</div>
+        <div class="report-hero-sub" id="savingAmountSub">Calculando...</div>
+      </div>
+      <div class="report-content" id="reportContent"></div>
+      <button class="btn-restart" onclick="restart()"><i class="ti ti-refresh"></i> Hacer un nuevo análisis</button>
+    </div>
+    <div class="bottom-nav">
+      <div class="bn-item active"><i class="ti ti-home"></i><span>Inicio</span></div>
+      <div class="bn-item"><i class="ti ti-report-analytics"></i><span>Informe</span></div>
+      <div class="bn-item"><i class="ti ti-chart-bar"></i><span>Evolución</span></div>
+      <div class="bn-item"><i class="ti ti-user"></i><span>Perfil</span></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+var S = { step: 0, data: {}, members: [] };
+
+function startQuestionnaire() {
+  document.getElementById('screenSplash').style.display = 'none';
+  document.getElementById('questionnaireHeader').style.display = 'block';
+  showStep(1);
+  addMember();
+}
+
+function showStep(n) {
+  document.querySelectorAll('.screen').forEach(function(s){ s.classList.remove('active'); });
+  var el = document.getElementById('step'+n);
+  if(el) {
+    el.classList.add('active');
+    window.scrollTo(0,0);
+  }
+  S.step = n;
+  var pct = ((n-1)/9*100);
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('headerSub').textContent = 'Paso '+n+' de 9';
+}
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(function(s){ s.classList.remove('active'); });
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+document.addEventListener('click', function(e) {
+  var btn = e.target.closest('.opt-btn');
+  if(!btn) return;
+  var g = btn.dataset.group;
+  if(!g) return;
+  document.querySelectorAll('[data-group="'+g+'"]').forEach(function(b){ b.classList.remove('selected'); });
+  btn.classList.add('selected');
+  S.data[g] = btn.dataset.val;
+});
+
+function addMember() {
+  var id = 'mb' + Date.now();
+  S.members.push(id);
+  var row = document.createElement('div');
+  row.className = 'member-row';
+  row.id = id;
+  row.innerHTML = '<select id="rol'+id+'"><option>Adulto (trabaja)</option><option>Adulto (no trabaja)</option><option>Hijo/a</option><option>Abuelo/a</option></select><input type="number" id="edad'+id+'" placeholder="Edad" min="0" max="110"><button class="btn-remove-member" onclick="removeMember(\''+id+'\')"><i class="ti ti-x"></i></button>';
+  document.getElementById('membersList').appendChild(row);
+}
+
+function removeMember(id) {
+  var el = document.getElementById(id);
+  if(el) el.remove();
+  S.members = S.members.filter(function(m){ return m !== id; });
+}
+
+function collectMembers() {
+  return S.members.map(function(id){
+    var rol = document.getElementById('rol'+id) ? document.getElementById('rol'+id).value : '';
+    var edad = document.getElementById('edad'+id) ? document.getElementById('edad'+id).value : '';
+    return rol + (edad ? ' de '+edad+' años' : '');
+  });
+}
+
+function getChecked(ids) {
+  return ids.filter(function(id){ var el=document.getElementById(id); return el&&el.checked; }).map(function(id){ return document.getElementById(id).value; });
+}
+
+function v(id) { var el=document.getElementById(id); return el&&el.value?el.value:'0'; }
+
+function calcKm() {
+  var kmT = parseFloat(document.getElementById('kmTrabajo').value)||0;
+  var dias = parseFloat(document.getElementById('diasTrabajo').value)||5;
+  var cond = parseFloat(document.getElementById('numConductores').value)||1;
+  var kmF = parseFloat(document.getElementById('kmFinde').value)||0;
+  if(kmT===0&&kmF===0){document.getElementById('kmResult').style.display='none';return;}
+  var total = Math.round(kmT*2*dias*cond*4.33 + kmF*4.33);
+  var gasto = Math.round(total/100*7*1.65);
+  document.getElementById('kmTotal').textContent = total.toLocaleString('es-ES');
+  document.getElementById('gastoGas').textContent = gasto.toLocaleString('es-ES');
+  document.getElementById('kmResult').style.display = 'block';
+  S.data.kmMesTotal = total; S.data.gastoGasolinaEstimado = gasto;
+}
+
+function goNext(from) {
+  if(from===1){
+    if(!document.getElementById('comunidad').value){alert('Por favor selecciona una comunidad autónoma.');return;}
+    if(!S.data.tamano){alert('Por favor selecciona el tamaño del municipio.');return;}
+    S.data.comunidad = document.getElementById('comunidad').value;
+  }
+  if(from===2){
+    if(S.members.length===0){alert('Añade al menos un miembro de la familia.');return;}
+    S.data.miembros = collectMembers();
+  }
+  if(from===3){
+    if(!S.data.tipovivienda){alert('Indica el tipo de vivienda.');return;}
+    if(!S.data.hipoteca){alert('Indica la situación de la vivienda.');return;}
+    S.data.metros=v('metros'); S.data.jardin=v('jardin');
+  }
+  if(from===4){ S.data.supermercados=getChecked(['s1','s2','s3','s4','s5','s6','s7','s8']); S.data.gastoCompra=v('gastoCompra'); }
+  if(from===5){
+    if(!S.data.comerFuera){alert('Indica con qué frecuencia coméis fuera.');return;}
+    if(!S.data.trabajo){alert('Indica la situación laboral.');return;}
+  }
+  if(from===6){ S.data.luz=v('luz'); S.data.gas=v('gas'); S.data.telco=v('telco'); S.data.seguros=v('seguros'); }
+  if(from===7){
+    if(!S.data.transporte){alert('Indica cómo os desplazáis.');return;}
+    S.data.kmTrabajo=v('kmTrabajo'); S.data.diasTrabajo=v('diasTrabajo');
+    S.data.numConductores=v('numConductores'); S.data.kmFinde=v('kmFinde');
+    calcKm();
+  }
+  if(from===8){ S.data.extras=getChecked(['o1','o2','o3','o4','o5','o6','o7','o8']); S.data.ocio=v('ocio'); }
+  showStep(from+1);
+}
+
+function goBack(from) {
+  if(from===2){ document.getElementById('screenSplash').style.display='flex'; document.getElementById('questionnaireHeader').style.display='none'; document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active');}); return; }
+  if(from>2) showStep(from-1);
+}
+
+function detectInvisibles() {
+  var d = S.data;
+  var gastos = [];
+  var tieneAdultos = S.members.some(function(id){ return document.getElementById('rol'+id)&&document.getElementById('rol'+id).value.indexOf('Adulto')>=0; });
+  var tieneHijos = S.members.some(function(id){ return document.getElementById('rol'+id)&&document.getElementById('rol'+id).value.indexOf('Hijo')>=0; });
+  var tieneAdolescentes = S.members.some(function(id){ var r=document.getElementById('rol'+id)?document.getElementById('rol'+id).value:''; var e=parseInt(document.getElementById('edad'+id)?document.getElementById('edad'+id).value:0)||0; return r.indexOf('Hijo')>=0&&e>=12&&e<=20; });
+  var ingresosAltos = d.ingresos&&(d.ingresos.indexOf('4.000')>=0||d.ingresos.indexOf('6.000')>=0);
+  var tieneJardin = parseInt(d.jardin||0)>0;
+  var esCasa = d.tipovivienda&&d.tipovivienda.indexOf('casa')>=0;
+  var esRural = d.tamano&&d.tamano.indexOf('rural')>=0;
+  var usaCoche = d.transporte&&d.transporte.indexOf('gasolina')>=0;
+
+  gastos.push('Cafés y consumiciones rápidas');
+  if(tieneAdultos) gastos.push('Comidas en el trabajo');
+  gastos.push('Compras impulsivas online');
+  gastos.push('Suscripciones olvidadas');
+  if(tieneAdolescentes) gastos.push('Compras en apps de los hijos');
+  if(usaCoche) gastos.push('Parking y peajes');
+  if(usaCoche) gastos.push('Mantenimiento del coche');
+  if(tieneJardin||esCasa) gastos.push('Mantenimiento del hogar');
+  if(tieneJardin) gastos.push('Jardinería y bricolaje');
+  gastos.push('Farmacia e higiene');
+  if(ingresosAltos) gastos.push('Regalos y celebraciones');
+  gastos.push('Ropa fuera del presupuesto');
+  if(esRural) gastos.push('Desplazamientos a ciudad');
+  gastos.push('Lotería y juegos de azar');
+  return gastos;
+}
+
+function prepareSubmit() {
+  if(!S.data.ingresos){alert('Por favor selecciona el rango de ingresos.');return;}
+  S.data.deudas=v('deudas');
+  S.data.miembros=collectMembers();
+  S.data.supermercados=getChecked(['s1','s2','s3','s4','s5','s6','s7','s8']);
+  S.data.extras=getChecked(['o1','o2','o3','o4','o5','o6','o7','o8']);
+  var inv = detectInvisibles();
+  S.data.gastosInvisibles = inv;
+
+  var items = [
+    ['Comunidad',S.data.comunidad],['Municipio',S.data.tamano],
+    ['Familia',(S.data.miembros||[]).join(', ')],
+    ['Vivienda',S.data.tipovivienda+' · '+S.data.metros+'m²'],
+    ['Jardín',S.data.jardin+'m²'],['Situación',S.data.hipoteca],
+    ['Supermercados',(S.data.supermercados&&S.data.supermercados.length?S.data.supermercados.join(', '):'no indicado')],
+    ['Compra/mes',S.data.gastoCompra+'€'],['Comer fuera',S.data.comerFuera],
+    ['Trabajo',S.data.trabajo],['Transporte',S.data.transporte],
+    ['Km trabajo',v('kmTrabajo')+'km (ida)'],['Km finde',v('kmFinde')+'km'],
+    ['Gasolina/mes',(S.data.gastoGasolinaEstimado||'—')+'€'],
+    ['Luz',S.data.luz+'€'],['Gas',S.data.gas+'€'],
+    ['Telco',S.data.telco+'€'],['Seguros',S.data.seguros+'€'],
+    ['Extras',(S.data.extras&&S.data.extras.length?S.data.extras.join(', '):'ninguno')],
+    ['Ocio',S.data.ocio+'€'],['Ingresos',S.data.ingresos],
+    ['Otras deudas',S.data.deudas+'€/mes']
+  ];
+  document.getElementById('summaryGrid').innerHTML = items.map(function(i){ return '<div class="summary-item">'+i[0]+'<strong>'+i[1]+'</strong></div>'; }).join('');
+  document.getElementById('invTagsContainer').innerHTML = inv.map(function(g){ return '<span class="inv-tag">'+g+'</span>'; }).join('');
+  showScreen('step10');
+}
+
+function buildPrompt() {
+  var d = S.data;
+  var sup=(d.supermercados&&d.supermercados.length)?d.supermercados.join(', '):'no indicado';
+  var ext=(d.extras&&d.extras.length)?d.extras.join(', '):'ninguno';
+  var miem=(d.miembros&&d.miembros.length)?d.miembros.join(', '):'no indicado';
+  var inv=(d.gastosInvisibles&&d.gastosInvisibles.length)?d.gastosInvisibles.join(', '):'ninguno';
+
+  return 'Eres un asesor financiero experto en ahorro doméstico para familias españolas. Genera un informe de ahorro personalizado en HTML limpio (solo h3, p, ul, li, strong, y divs con clases "saving-highlight" e "invisible-box").\n\nDATOS:\n- Comunidad: '+d.comunidad+'\n- Municipio: '+d.tamano+'\n- Familia: '+miem+'\n- Vivienda: '+d.tipovivienda+' de '+d.metros+'m², jardín: '+d.jardin+'m²\n- Situación: '+d.hipoteca+'\n- Supermercados: '+sup+'\n- Gasto compra: '+d.gastoCompra+'€/mes\n- Comer fuera: '+d.comerFuera+'\n- Trabajo: '+d.trabajo+'\n- Km trabajo (ida): '+v('kmTrabajo')+'km, '+v('diasTrabajo')+' días/semana, '+v('numConductores')+' conductores\n- Km finde: '+v('kmFinde')+'km\n- Km totales/mes: '+(d.kmMesTotal||'no calculado')+'\n- Gasto gasolina estimado: '+(d.gastoGasolinaEstimado||'no calculado')+'€/mes\n- Luz: '+d.luz+'€, Gas: '+d.gas+'€, Telco: '+d.telco+'€, Seguros: '+d.seguros+'€\n- Transporte: '+d.transporte+'\n- Extras: '+ext+'\n- Ocio: '+d.ocio+'€/mes\n- Ingresos: '+d.ingresos+'\n- Otras deudas: '+d.deudas+'€/mes\n\nESTRUCTURA DEL INFORME:\n1. Párrafo de resumen de la situación actual con los gastos principales estimados en euros y % sobre ingresos.\n2. Las 5 mejores oportunidades de ahorro. Para cada una: título en h3, qué hacen ahora, qué cambio concreto hacer (con nombres reales de supermercados españoles, apps, tarifas, servicios), cuánto pueden ahorrar en euros/mes. Usa div class="saving-highlight" para el ahorro de cada oportunidad.\n3. Sección llamada "Los gastos que no veis pero que existen" usando div class="invisible-box": analiza estos gastos invisibles detectados para su perfil: '+inv+'. Para cada uno estima cuánto pueden suponer al mes y da un consejo concreto para controlarlo.\n4. Los 3 primeros pasos concretos a hacer esta semana en ul li.\n5. Párrafo final con el ahorro total estimado mensual en euros y porcentaje sobre ingresos.\n\nTono cercano, positivo, habla de "vosotros" o "tú" según si es familia o persona sola. Muy específico con nombres reales de España. Solo HTML limpio, sin bloques de código ni explicaciones adicionales.';
+}
+
+async function generateReport() {
+  document.getElementById('step10').classList.remove('active');
+  document.getElementById('questionnaireHeader').style.display = 'none';
+  showScreen('screenLoading');
+
+  try {
+    var resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 2500,
+        messages: [{ role: 'user', content: buildPrompt() }]
+      })
+    });
+
+    if(!resp.ok) { var e=await resp.json(); throw new Error(e.error?e.error.message:'Error '+resp.status); }
+    var data = await resp.json();
+    var html = data.content.filter(function(b){return b.type==='text';}).map(function(b){return b.text;}).join('');
+    html = html.replace(/```html/g,'').replace(/```/g,'').trim();
+
+    var savMatch = html.match(/(\d{2,4})[\s€]*[-–][\s€]*(\d{2,4})/);
+    if(savMatch) {
+      document.getElementById('savingAmount').textContent = savMatch[1]+'–'+savMatch[2]+'€';
+      document.getElementById('savingAmountSub').textContent = 'al mes aplicando los cambios recomendados';
+    } else {
+      document.getElementById('savingAmount').textContent = 'Ver informe';
+      document.getElementById('savingAmountSub').textContent = 'Tu análisis completo a continuación';
+    }
+
+    document.getElementById('reportContent').innerHTML = html;
+    document.getElementById('reportSubtitle').textContent = 'Plan personalizado · '+(S.data.comunidad||'');
+    showScreen('screenReport');
+
+  } catch(err) {
+    document.getElementById('questionnaireHeader').style.display = 'block';
+    showScreen('step10');
+    var eb = document.getElementById('errorBox');
+    eb.style.display = 'block';
+    eb.textContent = 'No se pudo generar el informe: '+err.message+'. Por favor inténtalo de nuevo.';
+  }
+}
+
+function restart() {
+  S = { step:0, data:{}, members:[] };
+  document.getElementById('membersList').innerHTML='';
+  document.querySelectorAll('.opt-btn').forEach(function(b){b.classList.remove('selected');});
+  document.querySelectorAll('input[type=checkbox]').forEach(function(c){c.checked=false;});
+  document.querySelectorAll('input[type=number]').forEach(function(i){i.value='';});
+  document.getElementById('comunidad').value='';
+  document.getElementById('kmResult').style.display='none';
+  document.getElementById('errorBox').style.display='none';
+  document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active');});
+  document.getElementById('questionnaireHeader').style.display='none';
+  document.getElementById('screenSplash').style.display='flex';
+}
+</script>
+</body>
+</html>
