@@ -74,7 +74,7 @@ app.post('/api/generar-informe', auth, async (req, res) => {
     console.log('Llamando a Anthropic API...');
     console.log('API Key configurada:', process.env.ANTHROPIC_API_KEY ? 'SI (empieza por ' + process.env.ANTHROPIC_API_KEY.substring(0,10) + '...)' : 'NO');
     const message = await anthropic.messages.create({
-      model: 'claude-sonnet-4-20250514',
+      model: 'claude-sonnet-4-5',
       max_tokens: 4000,
       messages: [{ role: 'user', content: buildPrompt(expenseData) }]
     });
