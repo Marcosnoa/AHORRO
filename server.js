@@ -71,14 +71,19 @@ app.post('/api/generar-informe', auth, async (req, res) => {
 
   let result;
   try {
+    console.log('Llamando a Anthropic API...');
+    console.log('API Key configurada:', process.env.ANTHROPIC_API_KEY ? 'SI (empieza por ' + process.env.ANTHROPIC_API_KEY.substring(0,10) + '...)' : 'NO');
     const message = await anthropic.messages.create({
       model: 'claude-sonnet-4-20250514',
       max_tokens: 4000,
       messages: [{ role: 'user', content: buildPrompt(expenseData) }]
     });
+    console.log('Respuesta de Anthropic recibida correctamente');
     const text = message.content[0].text.replace(/```json/g,'').replace(/```html/g,'').replace(/```/g,'').trim();
     result = parseAIResponse(text, expenseData);
   } catch (e) {
+    console.error('ERROR en Anthropic API:', e.message);
+    console.error('Tipo de error:', e.constructor.name);
     result = generateLocalReport(expenseData);
   }
 
