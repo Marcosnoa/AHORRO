@@ -66,49 +66,57 @@ app.post('/api/login', async (req, res) => {
 
 // ─── GENERATE REPORT ─────────────────────────────────────────────────────────
 app.post('/api/generar-informe', auth, async (req, res) => {
-  const { expenseData } = req.body;
-  if (!expenseData) return res.status(400).json({ error: 'Faltan datos' });
-
-  let result;
   try {
-    console.log('Llamando a Anthropic API...');
-    console.log('API Key configurada:', process.env.ANTHROPIC_API_KEY ? 'SI (empieza por ' + process.env.ANTHROPIC_API_KEY.substring(0,10) + '...)' : 'NO');
-    const message = await anthropic.messages.create({
-      model: 'claude-sonnet-4-5',
-      max_tokens: 4000,
-      messages: [{ role: 'user', content: buildPrompt(expenseData) }]
+    const { expenseData } = req.body;
+    if (!expenseData) return res.status(400).json({ error: 'Faltan datos' });
+
+    let result;
+    try {
+      console.log('Llamando a Anthropic API...');
+      console.log('API Key configurada:', process.env.ANTHROPIC_API_KEY ? 'SI (empieza por ' + process.env.ANTHROPIC_API_KEY.substring(0,10) + '...)' : 'NO');
+      const message = await anthropic.messages.create({
+        model: 'claude-sonnet-4-5',
+        max_tokens: 4000,
+        messages: [{ role: 'user', content: buildPrompt(expenseData) }]
+      });
+      console.log('Respuesta de Anthropic recibida correctamente');
+      const text = message.content[0].text.replace(/```json/g,'').replace(/```html/g,'').replace(/```/g,'').trim();
+      result = parseAIResponse(text, expenseData);
+    } catch (e) {
+      console.error('ERROR en Anthropic API:', e.message);
+      console.error('Tipo de error:', e.constructor.name);
+      result = generateLocalReport(expenseData);
+    }
+
+    const resumen = result.html_content.replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim().substring(0,300);
+    const { data: informe, error } = await supabase.from('informes').insert([{
+      usuario_id: req.user.id,
+      respuestas: expenseData,
+      html_informe: result.html_content,
+      resumen,
+      ahorro_estimado: result.ahorroEstimado || 0,
+      gasto_total: result.totalDeclarado || 0,
+      comparativa_data: result.comparativa || null
+    }]).select().single();
+
+    if (error) {
+      console.error('Error guardando en Supabase:', error.message);
+      return res.status(500).json({ error: 'Error al guardar el informe: ' + error.message });
+    }
+
+    res.json({
+      informe_data: {
+        totalDeclarado: result.totalDeclarado,
+        ahorroEstimado: result.ahorroEstimado,
+        comparativa: result.comparativa
+      },
+      html_content: result.html_content,
+      id: informe.id
     });
-    console.log('Respuesta de Anthropic recibida correctamente');
-    const text = message.content[0].text.replace(/```json/g,'').replace(/```html/g,'').replace(/```/g,'').trim();
-    result = parseAIResponse(text, expenseData);
-  } catch (e) {
-    console.error('ERROR en Anthropic API:', e.message);
-    console.error('Tipo de error:', e.constructor.name);
-    result = generateLocalReport(expenseData);
+  } catch(e) {
+    console.error('ERROR GENERAL en generar-informe:', e.message);
+    res.status(500).json({ error: 'Error interno: ' + e.message });
   }
-
-  const resumen = result.html_content.replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim().substring(0,300);
-  const { data: informe, error } = await supabase.from('informes').insert([{
-    usuario_id: req.user.id,
-    respuestas: expenseData,
-    html_informe: result.html_content,
-    resumen,
-    ahorro_estimado: result.ahorroEstimado || 0,
-    gasto_total: result.totalDeclarado || 0,
-    comparativa_data: result.comparativa || null
-  }]).select().single();
-
-  if (error) return res.status(500).json({ error: 'Error al guardar el informe' });
-
-  res.json({
-    informe_data: {
-      totalDeclarado: result.totalDeclarado,
-      ahorroEstimado: result.ahorroEstimado,
-      comparativa: result.comparativa
-    },
-    html_content: result.html_content,
-    id: informe.id
-  });
 });
 
 // ─── HISTORIAL ────────────────────────────────────────────────────────────────
