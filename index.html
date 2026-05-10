@@ -36,14 +36,14 @@ body{font-family:'DM Sans',sans-serif;background:var(--g1);color:var(--g7);min-h
 .splash{background:var(--blue);min-height:100vh;display:flex;flex-direction:column;padding:48px 26px 40px;}
 .splash-logo{font-family:'DM Serif Display',serif;font-size:52px;color:var(--white);letter-spacing:-1px;margin-bottom:6px;}
 .splash-tag{font-size:17px;color:var(--blue-l);line-height:1.5;margin-bottom:40px;}
-.splash-feats{display:flex;flex-direction:column;gap:11px;flex:1;margin-bottom:36px;}
+.splash-feats{display:flex;flex-direction:column;gap:18px;flex:1;margin-bottom:20px;margin-top:44px;}
 .splash-feat{display:flex;align-items:flex-start;gap:13px;background:rgba(255,255,255,.10);border-radius:var(--rl);padding:14px;}
 .feat-ico{width:38px;height:38px;border-radius:var(--r);background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
 .feat-ico i{font-size:19px;color:var(--white);}
 .feat-title{font-size:14px;font-weight:600;color:var(--white);margin-bottom:2px;}
 .feat-desc{font-size:12px;color:var(--blue-l);line-height:1.4;}
 .splash-cta{background:var(--white);color:var(--blue-d);border:none;border-radius:var(--rl);padding:14px;font-size:15px;font-weight:600;width:100%;cursor:pointer;font-family:'DM Sans',sans-serif;margin-bottom:11px;}
-.splash-login{text-align:center;font-size:13px;color:var(--blue-l);}
+.splash-login{text-align:center;font-size:15px;color:var(--blue-l);}
 .splash-login span{color:var(--white);font-weight:500;cursor:pointer;text-decoration:underline;}
 
 /* FORMS */
@@ -126,7 +126,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--g1);color:var(--g7);min-h
 .dot{width:8px;height:8px;border-radius:50%;background:var(--blue-l);animation:pulse 1.2s ease-in-out infinite;}
 .dot:nth-child(2){animation-delay:.2s;} .dot:nth-child(3){animation-delay:.4s;}
 @keyframes pulse{0%,100%{opacity:.3;transform:scale(.8)}50%{opacity:1;transform:scale(1)}}
-.loading-steps{margin-top:24px;display:flex;flex-direction:column;gap:8px;}
+.loading-steps{margin-top:44px;display:flex;flex-direction:column;gap:8px;}
 .loading-step{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--g5);padding:8px 12px;background:var(--g1);border-radius:var(--r);}
 .loading-step.done{color:var(--green-d);background:var(--green-l);}
 .loading-step.active{color:var(--blue-d);background:var(--blue-p);}
@@ -280,6 +280,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--g1);color:var(--g7);min-h
 .form-logo-text{font-family:'DM Serif Display',serif;font-size:26px;color:var(--blue);}
 .hdr-logo-wrap{display:flex;align-items:center;gap:8px;}
 .hdr-logo-svg{width:30px;height:30px;}
+
 </style>
 </head>
 <body>
@@ -306,15 +307,15 @@ body{font-family:'DM Sans',sans-serif;background:var(--g1);color:var(--g7);min-h
     <div class="splash-feats">
       <div class="splash-feat">
         <div class="feat-ico"><i class="ti ti-calculator"></i></div>
-        <div><div class="feat-title">Dinos cuánto gastas realmente</div><div class="feat-desc">Introduce tus gastos reales por categoría en menos de 3 minutos</div></div>
+        <div><div class="feat-title">Responde a unas breves preguntas</div><div class="feat-desc">Introduce tus gastos aproximados por categoría en menos de 3 minutos</div></div>
       </div>
       <div class="splash-feat">
         <div class="feat-ico"><i class="ti ti-chart-bar"></i></div>
-        <div><div class="feat-title">Compara con familias como la tuya</div><div class="feat-desc">Ve exactamente en qué partidas te pasas o ahorras respecto a tu media</div></div>
+        <div><div class="feat-title">La IA compara con familias como la tuya</div><div class="feat-desc">Inteligencia Artificial que analiza tu zona, tu familia y tu nivel de ingresos</div></div>
       </div>
       <div class="splash-feat">
-        <div class="feat-ico"><i class="ti ti-target"></i></div>
-        <div><div class="feat-title">Plan de ahorro 100% tuyo</div><div class="feat-desc">Recomendaciones concretas para tu zona, tu familia y tu forma de vivir</div></div>
+        <div class="feat-ico"><i class="ti ti-brain"></i></div>
+        <div><div class="feat-title">Informe único generado por IA</div><div class="feat-desc">No es una plantilla genérica — la IA crea un plan de ahorro exclusivo para ti</div></div>
       </div>
     </div>
     <button class="splash-cta" onclick="showPage('pageRegister')">Empezar gratis <i class="ti ti-arrow-right"></i></button>
