@@ -16,30 +16,33 @@ const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SER
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 const JWT_SECRET = process.env.JWT_SECRET || 'ahurus-secret-2025';
 
-function authMiddleware(req, res, next) {
+// ─── AUTH MIDDLEWARE ──────────────────────────────────────────────────────────
+function auth(req, res, next) {
   const token = req.headers.authorization?.split(' ')[1];
   if (!token) return res.status(401).json({ error: 'No autorizado' });
   try { req.user = jwt.verify(token, JWT_SECRET); next(); }
   catch { res.status(401).json({ error: 'Token inválido' }); }
 }
 
-function adminMiddleware(req, res, next) {
+function admin(req, res, next) {
   if (!req.user?.isAdmin) return res.status(403).json({ error: 'Acceso denegado' });
   next();
 }
 
+// ─── REGISTER ────────────────────────────────────────────────────────────────
 app.post('/api/register', async (req, res) => {
   const { nombre, email, password } = req.body;
   if (!nombre || !email || !password) return res.status(400).json({ error: 'Todos los campos son obligatorios' });
-  const { data: existing } = await supabase.from('usuarios').select('id').eq('email', email).single();
-  if (existing) return res.status(400).json({ error: 'Ya existe una cuenta con ese email' });
-  const passwordHash = await bcrypt.hash(password, 10);
-  const { data, error } = await supabase.from('usuarios').insert([{ nombre, email, password_hash: passwordHash, es_admin: false }]).select().single();
+  const { data: ex } = await supabase.from('usuarios').select('id').eq('email', email).single();
+  if (ex) return res.status(400).json({ error: 'Ya existe una cuenta con ese email' });
+  const hash = await bcrypt.hash(password, 10);
+  const { data, error } = await supabase.from('usuarios').insert([{ nombre, email, password_hash: hash, es_admin: false }]).select().single();
   if (error) return res.status(500).json({ error: 'Error al crear la cuenta' });
   const token = jwt.sign({ id: data.id, email: data.email, nombre: data.nombre, isAdmin: false }, JWT_SECRET, { expiresIn: '30d' });
   res.json({ token, usuario: { id: data.id, nombre: data.nombre, email: data.email, isAdmin: false } });
 });
 
+// ─── LOGIN ────────────────────────────────────────────────────────────────────
 app.post('/api/login', async (req, res) => {
   const { email, password } = req.body;
   const { data: user } = await supabase.from('usuarios').select('*').eq('email', email).single();
@@ -50,207 +53,311 @@ app.post('/api/login', async (req, res) => {
   res.json({ token, usuario: { id: user.id, nombre: user.nombre, email: user.email, isAdmin: user.es_admin } });
 });
 
-app.get('/api/perfil', authMiddleware, async (req, res) => {
-  const { data } = await supabase.from('usuarios').select('id, nombre, email, es_admin, created_at').eq('id', req.user.id).single();
-  res.json(data);
-});
+// ─── GENERATE REPORT ─────────────────────────────────────────────────────────
+app.post('/api/generar-informe', auth, async (req, res) => {
+  const { expenseData } = req.body;
+  if (!expenseData) return res.status(400).json({ error: 'Faltan datos' });
 
-app.post('/api/generar-informe', authMiddleware, async (req, res) => {
-  const { respuestas } = req.body;
-  if (!respuestas) return res.status(400).json({ error: 'Faltan datos' });
-  let htmlInforme = '';
+  let result;
   try {
     const message = await anthropic.messages.create({
       model: 'claude-sonnet-4-20250514',
-      max_tokens: 3500,
-      messages: [{ role: 'user', content: buildPrompt(respuestas) }]
+      max_tokens: 4000,
+      messages: [{ role: 'user', content: buildPrompt(expenseData) }]
     });
-    htmlInforme = message.content[0].text.replace(/```html/g, '').replace(/```/g, '').trim();
-  } catch (aiError) {
-    htmlInforme = generarInformeLocal(respuestas);
+    const text = message.content[0].text.replace(/```json/g,'').replace(/```html/g,'').replace(/```/g,'').trim();
+    result = parseAIResponse(text, expenseData);
+  } catch (e) {
+    result = generateLocalReport(expenseData);
   }
-  const resumenTexto = htmlInforme.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().substring(0, 300);
+
+  const resumen = result.html_content.replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim().substring(0,300);
   const { data: informe, error } = await supabase.from('informes').insert([{
-    usuario_id: req.user.id, respuestas, html_informe: htmlInforme,
-    resumen: resumenTexto, ahorro_estimado: extraerAhorro(htmlInforme)
+    usuario_id: req.user.id,
+    respuestas: expenseData,
+    html_informe: result.html_content,
+    resumen,
+    ahorro_estimado: result.ahorroEstimado || 0,
+    gasto_total: result.totalDeclarado || 0,
+    comparativa_data: result.comparativa || null
   }]).select().single();
+
   if (error) return res.status(500).json({ error: 'Error al guardar el informe' });
-  res.json({ informe: htmlInforme, id: informe.id });
+
+  res.json({
+    informe_data: {
+      totalDeclarado: result.totalDeclarado,
+      ahorroEstimado: result.ahorroEstimado,
+      comparativa: result.comparativa
+    },
+    html_content: result.html_content,
+    id: informe.id
+  });
 });
 
-app.get('/api/mis-informes', authMiddleware, async (req, res) => {
-  const { data } = await supabase.from('informes').select('id, created_at, resumen, ahorro_estimado, respuestas').eq('usuario_id', req.user.id).order('created_at', { ascending: false });
+// ─── HISTORIAL ────────────────────────────────────────────────────────────────
+app.get('/api/mis-informes', auth, async (req, res) => {
+  const { data } = await supabase.from('informes').select('id, created_at, resumen, ahorro_estimado, gasto_total').eq('usuario_id', req.user.id).order('created_at', { ascending: false });
   res.json(data || []);
 });
 
-app.get('/api/informe/:id', authMiddleware, async (req, res) => {
+app.get('/api/informe/:id', auth, async (req, res) => {
   const { data } = await supabase.from('informes').select('*').eq('id', req.params.id).eq('usuario_id', req.user.id).single();
   if (!data) return res.status(404).json({ error: 'Informe no encontrado' });
   res.json(data);
 });
 
-app.get('/api/admin/usuarios', authMiddleware, adminMiddleware, async (req, res) => {
+// ─── ADMIN ────────────────────────────────────────────────────────────────────
+app.get('/api/admin/usuarios', auth, admin, async (req, res) => {
   const { data } = await supabase.from('usuarios').select('id, nombre, email, es_admin, created_at').order('created_at', { ascending: false });
   res.json(data || []);
 });
 
-app.get('/api/admin/estadisticas', authMiddleware, adminMiddleware, async (req, res) => {
+app.get('/api/admin/estadisticas', auth, admin, async (req, res) => {
   const { count: totalUsuarios } = await supabase.from('usuarios').select('*', { count: 'exact', head: true });
   const { count: totalInformes } = await supabase.from('informes').select('*', { count: 'exact', head: true });
-  const { data: ultimosInformes } = await supabase.from('informes').select('id, created_at, resumen, ahorro_estimado, usuarios(nombre, email)').order('created_at', { ascending: false }).limit(10);
+  const { data: ultimosInformes } = await supabase.from('informes').select('id, created_at, resumen, ahorro_estimado, gasto_total, usuarios(nombre, email)').order('created_at', { ascending: false }).limit(10);
   res.json({ totalUsuarios, totalInformes, ultimosInformes: ultimosInformes || [] });
 });
 
-app.get('/api/admin/usuario/:id/informes', authMiddleware, adminMiddleware, async (req, res) => {
-  const { data } = await supabase.from('informes').select('id, created_at, resumen, ahorro_estimado, respuestas, html_informe').eq('usuario_id', req.params.id).order('created_at', { ascending: false });
+app.get('/api/admin/usuario/:id/informes', auth, admin, async (req, res) => {
+  const { data } = await supabase.from('informes').select('id, created_at, resumen, ahorro_estimado, gasto_total, html_informe').eq('usuario_id', req.params.id).order('created_at', { ascending: false });
   res.json(data || []);
-});
-
-app.patch('/api/admin/usuario/:id/admin', authMiddleware, adminMiddleware, async (req, res) => {
-  const { es_admin } = req.body;
-  await supabase.from('usuarios').update({ es_admin }).eq('id', req.params.id);
-  res.json({ ok: true });
 });
 
 app.get('*', (req, res) => res.sendFile(path.join(__dirname, 'index.html')));
 
-function buildPrompt(r) {
-  return `Eres un asesor financiero experto en economía doméstica española con acceso a estadísticas del INE, Eurostat y estudios de consumo de hogares españoles. Tu tarea es generar un informe de gasto mensual REALISTA y COMPLETO para esta familia, sin subestimar ninguna partida.
+// ─── BUILD PROMPT ─────────────────────────────────────────────────────────────
+function buildPrompt(data) {
+  const { profile, gastos, gastosNoSe, totalDeclarado } = data;
 
-DATOS DE LA FAMILIA:
-- Comunidad: ${r.comunidad} (${r.tamano})
-- Familia: ${r.familia}, ${r.personas} personas en casa
-- Vivienda: ${r.tipoVivienda}, ${r.situacionVivienda}, ${r.metrosVivienda}m²
-- Sistema energético: ${r.sistemaEnergetico}
-- Seguros contratados: ${r.seguros}
-- Educación hijos: ${r.tipoEducacion}. Extras: ${r.extrasEducacion}
-- Estilo de vida: ${r.estiloVida}
-- Gasto en ropa: ${r.gastoRopa}
-- Transporte: ${r.transporte}, distancia al trabajo: ${r.distanciaTrabajo}
-- Supermercados: ${r.supermercados}. Come fuera: ${r.comerFuera}
-- Ingresos netos: ${r.ingresos}
+  const gastosTexto = Object.entries(gastos).map(([catId, cat]) => {
+    const partidas = Object.entries(cat.partidas || {}).map(([k, v]) =>
+      `  - ${v.label}: ${v.valor === 'estimar' ? 'A ESTIMAR por IA' : v.valor+'€'}`
+    ).join('\n');
+    return `${cat.emoji} ${cat.nombre} (total declarado: ${cat.total||0}€):\n${partidas}`;
+  }).join('\n\n');
 
-INSTRUCCIONES CRÍTICAS:
-1. Las cifras deben ser REALISTAS según estadísticas españolas 2024-2025. NO subestimes. Una familia media española gasta entre 2.500€ y 4.500€/mes en total según el INE.
-2. Incluye TODOS los gastos, incluyendo los que la gente olvida: seguros, educación, ropa, higiene, farmacia, mantenimiento del hogar, gastos bancarios, suscripciones.
-3. Calibra según los ingresos declarados: si gana 4.000€/mes, sus gastos reales serán acordes a ese nivel.
-4. Para los seguros declarados, estima costes reales: seguro coche ~600-1.200€/año, hogar ~200-400€/año, vida ~200-600€/año, médico privado ~100-300€/mes por persona.
-5. Para educación: concertado ~100-200€/mes, privado ~400-800€/mes, universidad privada ~800-1.500€/mes, extraescolares ~80-200€/mes por hijo.
-6. Para ropa: usa exactamente el nivel declarado (muy bajo ~50€, moderado ~100€, alto ~200€, muy alto ~350€+ al mes).
+  return `Eres un asesor financiero experto en economía doméstica española con profundo conocimiento de las estadísticas de gasto por comunidad autónoma del INE 2024-2025.
 
-Genera el informe en HTML limpio con esta estructura exacta:
+PERFIL DEL USUARIO:
+- Comunidad autónoma: ${profile.comunidad}
+- Tipo de municipio: ${profile.tamano}
+- Composición familiar: ${profile.familia}, ${profile.personas} personas
+- Situación de vivienda: ${profile.vivienda}
+- Ingresos netos mensuales: ${profile.ingresos}
+- Total gasto declarado: ${totalDeclarado}€/mes
 
-<div class="intro-personal">Párrafo de introducción muy personalizado para ESTA familia concreta. Menciona su comunidad, composición familiar y resume el gasto total estimado y el potencial de ahorro.</div>
+GASTOS REALES DECLARADOS:
+${gastosTexto}
 
-<h3>📊 Así se reparte vuestro gasto mensual real</h3>
-Para CADA categoría:
-<div class="gasto-categoria" data-categoria="NOMBRE_CORTO" data-importe="NUMERO_ENTERO">
-<h4>EMOJI Nombre de la categoría</h4>
-<p>Explicación específica para esta familia. Menciona por qué ese importe concreto para su perfil.</p>
-<div class="gasto-desglose">Concepto 1 (XX€) · Concepto 2 (XX€) · Concepto 3 (XX€)</div>
-</div>
+${gastosNoSe?.length ? `PARTIDAS A ESTIMAR (el usuario no sabe el importe exacto):\n${gastosNoSe.map(g=>`- ${g.cat}: ${g.sub}`).join('\n')}` : ''}
 
-Categorías OBLIGATORIAS (no omitas ninguna):
-- Vivienda (hipoteca/alquiler/mantenimiento/comunidad)
-- Alimentación (compra + restaurantes calibrado según supermercados y frecuencia fuera)
-- Energía (luz, gas, agua según sistema energético y tamaño vivienda)
-- Transporte (combustible/bono transporte + mantenimiento/seguro coche + amortización)
-- Seguros (desglose exacto de cada seguro declarado con precio real)
-- Educación (solo si aplica: matrícula + extraescolares + material + comedor + transporte escolar)
-- Ropa y calzado (según nivel declarado, para toda la familia)
-- Ocio y entretenimiento (según estilo de vida: streaming, salidas, hobbies, vacaciones prorrateadas)
-- Comunicaciones (internet, móviles)
-- Salud y farmacia (medicamentos, copagos, dentista, óptica)
-- Higiene y cuidado personal (productos, peluquería, cosmética)
-- Hogar y mantenimiento (limpieza, pequeñas reparaciones, electrodomésticos amortizados)
-- Gastos bancarios y financieros (comisiones, tarjetas, amortización créditos si aplica)
-- Gastos invisibles y varios (cafés, regalos, lotería, compras impulsivas, suscripciones olvidadas)
+TU TAREA:
+Genera un análisis completo y muy personalizado en formato JSON con esta estructura exacta:
 
-<h3>🎯 Vuestras mejores oportunidades de ahorro</h3>
-<div class="oportunidad-ahorro" data-ahorro="NUMERO">
-<strong>TITULO</strong><p>Explicación específica con nombres reales (Lidl, Digi, Fintonic, comparador.cnmc.es, Acierto.com...).</p>
-<div class="ahorro-badge">Ahorro estimado: XX€/mes</div>
-</div>
-(Mínimo 4 oportunidades concretas)
-
-<h3>💡 Los gastos del día a día que no veis</h3>
-<div class="gastos-invisibles"><ul><li>cada gasto invisible con estimación en euros</li></ul></div>
-
-<h3>📅 Tres pasos concretos para esta semana</h3>
-<ul class="plan-accion"><li>paso concreto y fácil</li></ul>
-
-<div class="resumen-ahorro" data-total-ahorro="NUMERO_TOTAL_AHORRO">
-<p>Resumen final: gasto total estimado, ahorro potencial mensual en euros, ahorro anual, porcentaje sobre ingresos.</p>
-</div>
-
-Tono: cercano, motivador, habla de "vosotros" si son familia o "tú" si vive solo. Solo HTML limpio, sin bloques de código.`;
+{
+  "comparativa": [
+    {
+      "categoria": "Vivienda",
+      "emoji": "🏠",
+      "tuyo": 1200,
+      "estandar": 950,
+      "comentario": "Estás pagando un 26% más que la media en ${profile.comunidad} para una familia como la tuya"
+    }
+  ],
+  "totalDeclarado": ${totalDeclarado},
+  "totalConEstimados": 2800,
+  "ahorroEstimado": 320,
+  "html": "...HTML del informe..."
 }
 
-function generarInformeLocal(r) {
-  const personas = parseInt(r.personas) || 2;
-  const ingresosNum = r.ingresos?.includes('6.000') ? 7000 : r.ingresos?.includes('4.000') ? 5000 : r.ingresos?.includes('2.500') ? 3200 : r.ingresos?.includes('1.500') ? 2000 : 1200;
-  const baseAlimentacion = personas * 200;
-  const baseEnergia = r.sistemaEnergetico?.includes('gas') ? 90 : 120;
-  const baseTransporte = r.transporte?.includes('gasolina') ? 220 : r.transporte?.includes('publico') ? 80 : 30;
-  const baseSeguros = (r.seguros?.split(',').length || 1) * 60;
-  const baseEducacion = r.tipoEducacion?.includes('privado') ? 600 : r.tipoEducacion?.includes('concertado') ? 200 : r.tipoEducacion?.includes('universidad privada') ? 1000 : r.tipoEducacion?.includes('universidad') ? 300 : r.tipoEducacion?.includes('publico') ? 80 : 0;
-  const baseRopa = r.gastoRopa?.includes('muy alto') ? 350 : r.gastoRopa?.includes('alto') ? 200 : r.gastoRopa?.includes('moderado') ? 100 : 50;
-  const baseOcio = r.estiloVida?.includes('social') ? 400 : r.estiloVida?.includes('activo') ? 250 : r.estiloVida?.includes('ahorra') ? 80 : 180;
-  const baseVivienda = r.situacionVivienda?.includes('hipoteca') ? 700 : r.situacionVivienda?.includes('alquiler') ? 650 : 150;
-  const baseComunicaciones = 90;
-  const baseSalud = personas * 25;
-  const baseHigiene = personas * 30;
-  const baseHogar = 80;
-  const baseInvisibles = Math.round(ingresosNum * 0.05);
-  const total = baseVivienda + baseAlimentacion + baseEnergia + baseTransporte + baseSeguros + baseEducacion + baseRopa + baseOcio + baseComunicaciones + baseSalud + baseHigiene + baseHogar + baseInvisibles;
-  const ahorroEstimado = Math.round(total * 0.20);
+INSTRUCCIONES PARA LA COMPARATIVA:
+1. Para CADA categoría de gasto, calcula el "estandar" realista para:
+   - Una familia de tipo "${profile.familia}" (${profile.personas} personas)
+   - En ${profile.comunidad}, municipio tipo "${profile.tamano}"
+   - Con ingresos de "${profile.ingresos}"
+   - Usa datos reales del INE, Eurostat y estudios de consumo españoles 2024
+2. Para las partidas marcadas "A ESTIMAR", calcula un valor realista y súmalo al totalConEstimados
+3. El semáforo es: rojo si supera +15% la media, verde si está -15% por debajo, amarillo si está en la media
 
-  return `<div class="intro-personal">Hemos analizado la situación de vuestra familia de <strong>${personas} personas</strong> en <strong>${r.comunidad}</strong>. Con un estilo de vida <strong>${r.estiloVida}</strong>, estimamos un gasto mensual total de <strong>${total.toLocaleString('es-ES')}€</strong>. Aplicando las recomendaciones de este informe podéis ahorrar hasta <strong>${ahorroEstimado.toLocaleString('es-ES')}€ al mes</strong>.</div>
-<h3>📊 Así se reparte vuestro gasto mensual real</h3>
-<div class="gasto-categoria" data-categoria="Vivienda" data-importe="${baseVivienda}"><h4>🏠 Vivienda</h4><p>Con vuestra vivienda ${r.situacionVivienda} en ${r.comunidad}, el gasto en vivienda incluye ${r.situacionVivienda?.includes('hipoteca') ? 'la hipoteca mensual' : r.situacionVivienda?.includes('alquiler') ? 'el alquiler mensual' : 'el mantenimiento'}, comunidad de propietarios, IBI prorrateado y reparaciones.</p><div class="gasto-desglose">${r.situacionVivienda?.includes('hipoteca') ? 'Hipoteca (~550€)' : r.situacionVivienda?.includes('alquiler') ? 'Alquiler (~550€)' : 'Mantenimiento (~80€)'} · Comunidad (${Math.round(baseVivienda*0.10)}€) · IBI/seguros hogar prorrateados (${Math.round(baseVivienda*0.10)}€)</div></div>
-<div class="gasto-categoria" data-categoria="Alimentación" data-importe="${baseAlimentacion}"><h4>🛒 Alimentación</h4><p>Para ${personas} personas comprando en ${r.supermercados || 'vuestros supermercados'} y comiendo fuera ${r.comerFuera}. Incluye desayuno, comida y cena para toda la familia más las salidas a restaurantes.</p><div class="gasto-desglose">Compra supermercado (${Math.round(baseAlimentacion*0.70)}€) · Restaurantes/fuera (${Math.round(baseAlimentacion*0.20)}€) · Extras y caprichos (${Math.round(baseAlimentacion*0.10)}€)</div></div>
-<div class="gasto-categoria" data-categoria="Energía" data-importe="${baseEnergia}"><h4>⚡ Energía</h4><p>Con ${r.sistemaEnergetico} en ${r.metrosVivienda || '90'}m² en ${r.comunidad}. El clima de vuestra zona determina el consumo de calefacción y refrigeración.</p><div class="gasto-desglose">Electricidad (${Math.round(baseEnergia*0.50)}€) · ${r.sistemaEnergetico?.includes('gas') ? 'Gas natural' : 'Energía calefacción'} (${Math.round(baseEnergia*0.35)}€) · Agua (${Math.round(baseEnergia*0.15)}€)</div></div>
-<div class="gasto-categoria" data-categoria="Transporte" data-importe="${baseTransporte}"><h4>🚗 Transporte</h4><p>Con ${r.transporte} y distancia al trabajo de ${r.distanciaTrabajo}. Incluye combustible o abono transporte, mantenimiento del vehículo y amortización.</p><div class="gasto-desglose">Combustible/abono (${Math.round(baseTransporte*0.60)}€) · Mantenimiento/seguro (${Math.round(baseTransporte*0.30)}€) · Parking/peajes (${Math.round(baseTransporte*0.10)}€)</div></div>
-<div class="gasto-categoria" data-categoria="Seguros" data-importe="${baseSeguros}"><h4>🛡️ Seguros</h4><p>Tenéis contratados: ${r.seguros || 'seguros no declarados'}. Los seguros suponen un gasto fijo importante que muchas familias subestiman.</p><div class="gasto-desglose">Seguros contratados distribuidos mensualmente (${baseSeguros}€ total)</div></div>
-${baseEducacion > 0 ? `<div class="gasto-categoria" data-categoria="Educación" data-importe="${baseEducacion}"><h4>📚 Educación</h4><p>Con ${r.tipoEducacion} y extras de ${r.extrasEducacion || 'ninguno'}, la educación es una inversión importante en vuestra familia.</p><div class="gasto-desglose">Matrícula/cuotas (${Math.round(baseEducacion*0.60)}€) · Extraescolares/academia (${Math.round(baseEducacion*0.25)}€) · Material/libros/comedor (${Math.round(baseEducacion*0.15)}€)</div></div>` : ''}
-<div class="gasto-categoria" data-categoria="Ropa" data-importe="${baseRopa}"><h4>👕 Ropa y calzado</h4><p>Con un nivel de gasto en ropa ${r.gastoRopa?.split('(')[0] || 'moderado'} para ${personas} personas. Incluye renovación de armario, calzado y complementos a lo largo del año.</p><div class="gasto-desglose">Ropa adultos (${Math.round(baseRopa*0.60)}€) · Calzado (${Math.round(baseRopa*0.25)}€) · Complementos/otros (${Math.round(baseRopa*0.15)}€)</div></div>
-<div class="gasto-categoria" data-categoria="Ocio" data-importe="${baseOcio}"><h4>🎬 Ocio y entretenimiento</h4><p>Con un estilo de vida ${r.estiloVida?.split('(')[0] || 'mixto'}, el ocio incluye plataformas digitales, salidas, hobbies y vacaciones prorrateadas.</p><div class="gasto-desglose">Plataformas/suscripciones (${Math.round(baseOcio*0.15)}€) · Salidas y actividades (${Math.round(baseOcio*0.50)}€) · Vacaciones prorrateadas (${Math.round(baseOcio*0.35)}€)</div></div>
-<div class="gasto-categoria" data-categoria="Comunicaciones" data-importe="${baseComunicaciones}"><h4>📱 Comunicaciones</h4><p>Internet y líneas de móvil para vuestra familia en ${r.comunidad}.</p><div class="gasto-desglose">Fibra + router (40€) · Líneas móviles (${baseComunicaciones-40}€)</div></div>
-<div class="gasto-categoria" data-categoria="Salud" data-importe="${baseSalud}"><h4>🏥 Salud y farmacia</h4><p>Medicamentos, copagos sanitarios, dentista y óptica para ${personas} personas. Un gasto real que suele sorprender al sumarlo.</p><div class="gasto-desglose">Farmacia y medicamentos (${Math.round(baseSalud*0.50)}€) · Dentista/óptica (${Math.round(baseSalud*0.30)}€) · Otros sanitarios (${Math.round(baseSalud*0.20)}€)</div></div>
-<div class="gasto-categoria" data-categoria="Higiene" data-importe="${baseHigiene}"><h4>🧴 Higiene y cuidado personal</h4><p>Productos de higiene, cosmética, peluquería y cuidado personal para ${personas} personas.</p><div class="gasto-desglose">Productos higiene (${Math.round(baseHigiene*0.40)}€) · Cosmética/cuidado (${Math.round(baseHigiene*0.35)}€) · Peluquería/barbería (${Math.round(baseHigiene*0.25)}€)</div></div>
-<div class="gasto-categoria" data-categoria="Hogar" data-importe="${baseHogar}"><h4>🔧 Hogar y mantenimiento</h4><p>Productos de limpieza, pequeñas reparaciones y mantenimiento general de la vivienda.</p><div class="gasto-desglose">Limpieza y consumibles (${Math.round(baseHogar*0.50)}€) · Reparaciones/bricolaje (${Math.round(baseHogar*0.30)}€) · Electrodomésticos amortizados (${Math.round(baseHogar*0.20)}€)</div></div>
-<div class="gasto-categoria" data-categoria="Gastos invisibles" data-importe="${baseInvisibles}"><h4>👻 Gastos invisibles y varios</h4><p>Los gastos que nunca aparecen en el presupuesto pero que al sumarlos sorprenden. Para vuestra familia estimamos entre ${Math.round(baseInvisibles*0.8)}€ y ${Math.round(baseInvisibles*1.2)}€ al mes.</p><div class="gasto-desglose">Cafés y consumiciones (${Math.round(baseInvisibles*0.25)}€) · Compras impulsivas (${Math.round(baseInvisibles*0.30)}€) · Suscripciones olvidadas (${Math.round(baseInvisibles*0.15)}€) · Regalos/celebraciones (${Math.round(baseInvisibles*0.20)}€) · Otros (${Math.round(baseInvisibles*0.10)}€)</div></div>
-<h3>🎯 Vuestras mejores oportunidades de ahorro</h3>
-<div class="oportunidad-ahorro" data-ahorro="${Math.round(baseAlimentacion*0.18)}"><strong>1. Optimizar la compra del supermercado</strong><p>Concentrad el 70% en <strong>Lidl o Aldi</strong> y usad <strong>Tiendeo</strong> antes de ir para ver ofertas. Para ${personas} personas el ahorro puede ser significativo.</p><div class="ahorro-badge">Ahorro: ${Math.round(baseAlimentacion*0.18)}€/mes</div></div>
-<div class="oportunidad-ahorro" data-ahorro="45"><strong>2. Revisar la tarifa de móvil e internet</strong><p><strong>Digi</strong> ofrece fibra 1Gb + móvil ilimitado por 22€/mes. Llama al número de bajas de tu operadora actual — el 80% de las veces te mejoran la tarifa al momento.</p><div class="ahorro-badge">Ahorro: 45€/mes</div></div>
-<div class="oportunidad-ahorro" data-ahorro="${Math.round(baseSeguros*0.20)}"><strong>3. Comparar y renegociar los seguros</strong><p>Usad <strong>Acierto.com</strong> o <strong>Rastreator.com</strong> para comparar vuestros seguros actuales. Las familias que comparan ahorran de media un 20-30% sin perder coberturas.</p><div class="ahorro-badge">Ahorro: ${Math.round(baseSeguros*0.20)}€/mes</div></div>
-<div class="oportunidad-ahorro" data-ahorro="25"><strong>4. Optimizar el consumo eléctrico</strong><p>Activa la tarifa valle/punta y programa lavadora y lavavajillas entre las 00:00 y las 08:00. Compara tarifas en <strong>comparador.cnmc.es</strong> (gratis).</p><div class="ahorro-badge">Ahorro: 25€/mes</div></div>
-<div class="oportunidad-ahorro" data-ahorro="${Math.round(baseInvisibles*0.30)}"><strong>5. Controlar los gastos invisibles</strong><p>Descarga <strong>Fintonic</strong> (gratis) y conecta tu banco. En el primer mes la mayoría de familias detecta entre 80€ y 150€ en gastos que no recordaban tener.</p><div class="ahorro-badge">Ahorro: ${Math.round(baseInvisibles*0.30)}€/mes</div></div>
-<h3>💡 Los gastos del día a día que no veis</h3>
-<div class="gastos-invisibles"><ul>
-<li><strong>Cafés y consumiciones rápidas:</strong> 2 cafés/día por persona = ${personas * 45}€/mes</li>
-<li><strong>Suscripciones digitales olvidadas:</strong> Apps, juegos, servicios caducados (15-30€/mes)</li>
-<li><strong>Compras impulsivas online:</strong> Amazon, moda online, app stores (50-100€/mes)</li>
-<li><strong>Comidas en el trabajo:</strong> Menú del día o bocadillo ~10€/día/persona trabajadora</li>
-<li><strong>Farmacia sin receta:</strong> Vitaminas, complementos, productos de parafarmacia (20-40€/mes)</li>
-<li><strong>Regalos y celebraciones:</strong> Cumpleaños, bodas, comuniones prorrateados (30-60€/mes)</li>
-<li><strong>Pequeñas obras y bricolaje:</strong> Materiales, herramientas, pinturas (20-40€/mes de media)</li>
-</ul></div>
-<h3>📅 Tres pasos concretos para esta semana</h3>
-<ul class="plan-accion">
-<li><strong>Hoy:</strong> Descarga <strong>Fintonic</strong> y conecta tu cuenta bancaria. Revisa los últimos 2 meses de movimientos e identifica los 3 gastos más sorprendentes.</li>
-<li><strong>Esta semana:</strong> Llama al número de bajas de tu operadora de teléfono e internet. Diles que estás pensando en irte a Digi. El 80% de las veces te mejoran la tarifa en el acto.</li>
-<li><strong>Este fin de semana:</strong> Entra en Acierto.com y compara tus seguros actuales. Dedica 20 minutos y es probable que encuentres un ahorro de ${Math.round(baseSeguros*0.20)}€/mes o más.</li>
+INSTRUCCIONES PARA EL HTML:
+El HTML debe ser MUY VISUAL y PERSONAL. Estructura obligatoria:
+
+<div class="saving-hero"><div class="sh-label">Puedes ahorrar cada mes</div><div class="sh-amount">TOTAL€</div><div class="sh-sub">aplicando las recomendaciones de tu informe</div></div>
+
+<h3>🔍 Lo que hemos descubierto sobre tus gastos</h3>
+<p>Párrafo introductorio MUY PERSONAL que mencione específicamente: la comunidad, el tipo de familia, los gastos donde más se desvía. Que el usuario sienta que es solo para él/ella.</p>
+
+<h3>🚨 Donde más puedes mejorar</h3>
+Para CADA categoría donde el usuario supere la media en más de un 15%, genera una tarjeta así:
+<div class="opp-card">
+  <div class="opp-card-top">
+    <div class="opp-num">1</div>
+    <div><div class="opp-title">CATEGORIA — Gastas X€ más que la media</div><span class="opp-saving">Potencial: XX€/mes</span></div>
+  </div>
+  <div class="opp-body">Explicación muy específica: por qué gasta más, qué puede cambiar exactamente (nombres reales de supermercados, operadoras, comparadores en ${profile.comunidad}), cuánto puede ahorrar. Muy concreto y accionable.</div>
+</div>
+
+<h3>✅ Lo que estás haciendo bien</h3>
+<div class="congrat-box">Lista de las categorías donde el usuario está por debajo de la media. Que se sienta reconocido y motivado. Personaliza mencionando los importes concretos.</div>
+
+<h3>📋 Tu plan de acción — primeros pasos</h3>
+Genera 3 pasos MUY CONCRETOS ordenados por impacto:
+<div class="step-card"><div class="step-num">1</div><div class="step-body"><div class="step-title">Acción concreta esta semana</div><div class="step-desc">Instrucción específica con nombres reales de apps, webs, servicios para ${profile.comunidad}. Tiempo estimado y ahorro esperado.</div></div></div>
+
+<h3>💡 Gastos invisibles detectados en tu perfil</h3>
+<p>Basándote en su perfil específico (${profile.familia}, ${profile.tamano} en ${profile.comunidad}), identifica 4-5 gastos invisibles típicos CON ESTIMACIÓN EN EUROS de cuánto pueden sumarle al mes sin que se dé cuenta.</p>
+
+IMPORTANTE:
+- Todo debe estar calibrado para ${profile.comunidad}, no generalices para toda España
+- Menciona servicios, supermercados y opciones reales disponibles en ${profile.comunidad}
+- Tono cercano y personal, habla de "tú" si vive solo o "vosotros" si es familia
+- El ahorro potencial debe ser realista, no exagerado
+- Solo HTML limpio dentro del campo "html", sin etiquetas markdown`;
+}
+
+// ─── PARSE AI RESPONSE ────────────────────────────────────────────────────────
+function parseAIResponse(text, expenseData) {
+  try {
+    const jsonMatch = text.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) throw new Error('No JSON found');
+    const parsed = JSON.parse(jsonMatch[0]);
+    return {
+      comparativa: parsed.comparativa || [],
+      totalDeclarado: parsed.totalDeclarado || expenseData.totalDeclarado || 0,
+      ahorroEstimado: parsed.ahorroEstimado || 0,
+      html_content: parsed.html || parsed.html_content || generateLocalReport(expenseData).html_content
+    };
+  } catch(e) {
+    const htmlMatch = text.match(/<[\s\S]*>/);
+    return {
+      comparativa: [],
+      totalDeclarado: expenseData.totalDeclarado || 0,
+      ahorroEstimado: 0,
+      html_content: htmlMatch ? htmlMatch[0] : text
+    };
+  }
+}
+
+// ─── LOCAL REPORT (sin API key) ───────────────────────────────────────────────
+function generateLocalReport(data) {
+  const { profile, gastos, totalDeclarado } = data;
+  const personas = parseInt(profile.personas) || 2;
+  const comunidad = profile.comunidad || 'tu comunidad';
+  const ingresos = profile.ingresos || 'entre 2.500€ y 4.000€';
+  const ingresosNum = ingresos.includes('6.000') ? 7000 : ingresos.includes('4.000') ? 5000 : ingresos.includes('2.500') ? 3200 : ingresos.includes('1.500') ? 2000 : 1200;
+  const esFamilia = profile.familia && !profile.familia.includes('solo') && !profile.familia.includes('pareja');
+  const pronombre = profile.familia?.includes('solo') ? 'tú' : 'vosotros';
+  const esCiudadGrande = profile.tamano?.includes('gran ciudad');
+  const multiplicadorZona = esCiudadGrande ? 1.25 : profile.tamano?.includes('mediana') ? 1.0 : 0.85;
+
+  // Estándares por categoría ajustados por zona y familia
+  const estandares = {
+    vivienda: Math.round(750 * multiplicadorZona * (personas > 2 ? 1.1 : 1)),
+    alimentacion: Math.round(200 * personas * (esCiudadGrande ? 1.1 : 0.95)),
+    transporte: Math.round(180 * (personas > 2 ? 1.3 : 1) * multiplicadorZona),
+    seguros: Math.round(120 * personas * 0.6),
+    educacion: esFamilia ? Math.round(150 * (personas - 2)) : 0,
+    ropa: Math.round(80 * personas),
+    salud: Math.round(40 * personas),
+    ocio: Math.round(150 * (personas > 2 ? 1.5 : 1) * (esCiudadGrande ? 1.2 : 0.9)),
+    hogar: Math.round(90 * (personas > 2 ? 1.2 : 1)),
+  };
+
+  // Calcular totales por categoría
+  const totalesPorCat = {};
+  const catEmojis = { vivienda:'🏠', alimentacion:'🛒', transporte:'🚗', seguros:'🛡️', educacion:'📚', ropa:'👕', salud:'💊', ocio:'🎬', hogar:'🧴' };
+
+  Object.entries(gastos).forEach(([catId, cat]) => {
+    totalesPorCat[catId] = cat.total || 0;
+  });
+
+  // Generar comparativa
+  const comparativa = Object.entries(estandares).map(([catId, estandar]) => {
+    const tuyo = totalesPorCat[catId] || 0;
+    const catNombres = { vivienda:'Vivienda', alimentacion:'Alimentación', transporte:'Transporte', seguros:'Seguros', educacion:'Educación', ropa:'Ropa y calzado', salud:'Salud', ocio:'Ocio', hogar:'Hogar y personal' };
+    if(tuyo === 0 && estandar === 0) return null;
+    return { categoria: catNombres[catId] || catId, emoji: catEmojis[catId]||'💶', tuyo, estandar };
+  }).filter(Boolean);
+
+  // Calcular ahorro potencial
+  const ahorroEstimado = Math.round(comparativa.reduce((sum, c) => {
+    const exceso = (c.tuyo || 0) - (c.estandar || 0);
+    return sum + (exceso > 0 ? exceso * 0.6 : 0);
+  }, 0));
+
+  // Identificar dónde se pasa
+  const excesos = comparativa.filter(c => c.tuyo > c.estandar * 1.15).sort((a,b) => (b.tuyo-b.estandar)-(a.tuyo-a.estandar));
+  const ahorros = comparativa.filter(c => c.tuyo <= c.estandar * 0.85 && c.tuyo > 0);
+
+  // Recomendaciones por comunidad
+  const recomendaciones = {
+    supermercado: comunidad === 'Madrid' || comunidad === 'Cataluña' ? 'Mercadona, Lidl o Aldi' :
+                  comunidad === 'País Vasco' ? 'Eroski, Lidl o Aldi' :
+                  comunidad === 'Galicia' ? 'Gadis, Lidl o Mercadona' :
+                  comunidad === 'Andalucía' ? 'Mercadona, Lidl o Aldi' : 'Lidl, Aldi o Mercadona',
+    operadora: 'Digi (desde 22€/mes fibra + móvil), Pepephone o Simyo',
+    comparador: 'comparador.cnmc.es para la luz, Acierto.com para seguros',
+  };
+
+  const html = `
+<div class="saving-hero">
+  <div class="sh-label">Puedes ahorrar cada mes</div>
+  <div class="sh-amount">${ahorroEstimado > 0 ? ahorroEstimado+'€' : 'Ver análisis'}</div>
+  <div class="sh-sub">aplicando las recomendaciones de tu informe personalizado</div>
+</div>
+
+<h3>🔍 Lo que hemos descubierto sobre tus gastos</h3>
+<p>Hemos analizado detalladamente los gastos de ${pronombre === 'tú' ? 'tu hogar' : 'vuestra familia de '+personas+' personas'} en ${comunidad}. Tu gasto total declarado es de <strong>${(totalDeclarado||0).toLocaleString('es-ES')}€/mes</strong>, y lo hemos comparado con familias similares a la tuya en ${comunidad}. ${excesos.length > 0 ? `Hemos encontrado <strong>${excesos.length} categorías</strong> donde gastas más de lo habitual para tu perfil, con un potencial de ahorro de hasta <strong>${ahorroEstimado}€ al mes</strong>.` : 'En general tu gestión económica es buena, aunque siempre hay margen de mejora.'}</p>
+
+${excesos.length > 0 ? `<h3>🚨 Donde más puedes mejorar</h3>
+${excesos.slice(0,4).map((c, i) => {
+  const exceso = c.tuyo - c.estandar;
+  const ahorroPotencial = Math.round(exceso * 0.6);
+  let consejo = '';
+  if(c.categoria === 'Alimentación') consejo = `Concentra el 70% de la compra en ${recomendaciones.supermercado}. Una familia como la tuya en ${comunidad} puede reducir este gasto hasta un 20% sin cambiar su dieta.`;
+  else if(c.categoria === 'Vivienda') consejo = `Revisa tu tarifa de luz en ${recomendaciones.comparador}. La tarifa con horas valle puede ahorrarte entre 15€ y 30€ al mes programando electrodomésticos de noche.`;
+  else if(c.categoria === 'Transporte') consejo = `Con ${c.tuyo}€/mes en transporte, estás un ${Math.round(exceso/c.estandar*100)}% sobre la media en ${comunidad}. Revisa si puedes combinar con transporte público o compartir desplazamientos.`;
+  else if(c.categoria === 'Seguros') consejo = `Compara tus seguros en Acierto.com o Rastreator.com. Las familias que comparan ahorran de media entre 200€ y 400€ al año sin perder coberturas.`;
+  else if(c.categoria === 'Ocio') consejo = `Revisa tus suscripciones activas — muchas familias pagan por servicios que apenas usan. Rotar entre plataformas de streaming en lugar de tenerlas todas activas puede ahorrarte 20-30€/mes.`;
+  else if(c.categoria === 'Ropa y calzado') consejo = `Planificar las compras de ropa en temporada de rebajas y usar apps como Vinted para ropa de calidad a menos precio puede reducir este gasto considerablemente.`;
+  else consejo = `Este gasto está por encima de la media para tu perfil en ${comunidad}. Revisarlo con detalle puede revelarte oportunidades de ahorro importantes.`;
+  return `<div class="opp-card">
+    <div class="opp-card-top">
+      <div class="opp-num">${i+1}</div>
+      <div><div class="opp-title">${c.emoji} ${c.categoria} — Gastas ${exceso.toLocaleString('es-ES')}€ más que la media</div><span class="opp-saving">Potencial: ${ahorroPotencial}€/mes</span></div>
+    </div>
+    <div class="opp-body">${consejo} Tu gasto actual: <strong>${c.tuyo}€/mes</strong> vs. media similar en ${comunidad}: <strong>${c.estandar}€/mes</strong>.</div>
+  </div>`;
+}).join('')}` : ''}
+
+${ahorros.length > 0 ? `<h3>✅ Lo que estás haciendo bien</h3>
+<div class="congrat-box">
+  <strong>¡Enhorabuena!</strong> En estas categorías gastas por debajo de la media de familias similares en ${comunidad}:<br><br>
+  ${ahorros.map(c => `<strong>${c.emoji} ${c.categoria}:</strong> ${c.tuyo}€ vs. ${c.estandar}€ de media (ahorras ${c.estandar - c.tuyo}€/mes más que la media)`).join('<br>')}
+</div>` : ''}
+
+<h3>📋 Tu plan de acción — primeros pasos</h3>
+<div class="step-card"><div class="step-num">1</div><div class="step-body"><div class="step-title">Esta semana — Revisa tus suscripciones y seguros</div><div class="step-desc">Abre el extracto de tu banco del último mes. Busca todos los cargos recurrentes pequeños (Netflix, Spotify, apps...). Cancela los que no usas activamente. Después compara tus seguros en <strong>Acierto.com</strong>. Esta acción sola puede liberarte 50-100€/mes. Tiempo estimado: 30 minutos.</div></div></div>
+<div class="step-card"><div class="step-num">2</div><div class="step-body"><div class="step-title">Próxima semana — Optimiza tu compra</div><div class="step-desc">Prueba a hacer la compra principal en <strong>${recomendaciones.supermercado}</strong> durante un mes. Usa la app <strong>Tiendeo</strong> antes de ir para ver las ofertas de la semana. Planifica el menú con antelación y haz una sola compra grande. El ahorro puede ser del 15-20% en este gasto.</div></div></div>
+<div class="step-card"><div class="step-num">3</div><div class="step-body"><div class="step-title">Este mes — Revisa tus tarifas de suministros</div><div class="step-desc">Entra en <strong>comparador.cnmc.es</strong> (es gratis y oficial) y comprueba si tu tarifa de luz es la más económica. Activa la tarifa con discriminación horaria si no la tienes. Llama al número de bajas de tu operadora de internet y móvil y pide mejora de tarifa o cámbiate a <strong>${recomendaciones.operadora}</strong>.</div></div></div>
+
+<h3>💡 Gastos invisibles en tu perfil</h3>
+<p>Basándonos en ${pronombre === 'tú' ? 'tu perfil' : 'vuestro perfil'} de ${profile.familia} en ${comunidad}, estos son los gastos que probablemente no estás contabilizando pero que suman cada mes:</p>
+<ul>
+  <li><strong>Cafés y consumiciones rápidas:</strong> ${personas} personas × ~40€/mes = ${personas*40}€/mes que "desaparecen" sin sentir</li>
+  <li><strong>Compras impulsivas online:</strong> Amazon, Zara online, apps... entre 50€ y 100€/mes de media</li>
+  <li><strong>Farmacia sin receta:</strong> Vitaminas, complementos, parafarmacia sin receta: 20-40€/mes</li>
+  <li><strong>Regalos y celebraciones:</strong> Cumpleaños, cenas de empresa, regalos varios prorrateados: 30-60€/mes</li>
+  ${esFamilia ? '<li><strong>Material escolar fuera de temporada:</strong> Fotocopias, material extra, excursiones: 20-40€/mes</li>' : ''}
+  <li><strong>Suscripciones olvidadas:</strong> Apps, servicios digitales que ya no usas: 15-30€/mes</li>
 </ul>
-<div class="resumen-ahorro" data-total-ahorro="${ahorroEstimado}">
-<p>Vuestro gasto mensual real estimado es de <strong>${total.toLocaleString('es-ES')}€</strong>. Aplicando las recomendaciones de este informe podéis ahorrar entre <strong>${ahorroEstimado}€ y ${Math.round(ahorroEstimado*1.3)}€ al mes</strong>, lo que supone <strong>${ahorroEstimado*12}€ al año</strong> — entre el <strong>${Math.round(ahorroEstimado/ingresosNum*100)}% y el ${Math.round(ahorroEstimado*1.3/ingresosNum*100)}%</strong> de vuestros ingresos.</p>
-</div>`;
+<p>En total, estos gastos invisibles pueden sumar entre <strong>${personas*40+80}€ y ${personas*50+130}€ al mes</strong> sin que ${pronombre === 'tú' ? 'te des cuenta' : 'os deis cuenta'}.</p>`;
+
+  return { comparativa, totalDeclarado, ahorroEstimado, html_content: html };
 }
 
-function extraerAhorro(html) {
-  const match = html.match(/data-total-ahorro="(\d+)"/);
-  return match ? parseInt(match[1]) : 0;
-}
-
+// ─── START SERVER ─────────────────────────────────────────────────────────────
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Ahurus server corriendo en puerto ${PORT}`));
