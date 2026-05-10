@@ -270,6 +270,16 @@ body{font-family:'DM Sans',sans-serif;background:var(--g1);color:var(--g7);min-h
 .info-box{background:var(--blue-p);border:1px solid var(--blue-l);border-radius:var(--r);padding:10px 13px;font-size:12px;color:var(--blue-d);line-height:1.5;margin-bottom:12px;display:flex;gap:7px;}
 .info-box i{flex-shrink:0;font-size:14px;margin-top:1px;}
 .btn-new{background:rgba(255,255,255,.18);border:none;color:var(--white);border-radius:99px;padding:6px 14px;font-size:12px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;}
+
+.splash-logo-img{display:flex;align-items:center;gap:14px;margin-bottom:10px;}
+.splash-logo-svg{width:72px;height:72px;flex-shrink:0;}
+.splash-logo-text{font-family:'DM Serif Display',serif;font-size:46px;color:var(--white);letter-spacing:-1px;line-height:1;}
+.splash-logo-tagline{font-size:13px;color:var(--blue-l);margin-top:3px;letter-spacing:.02em;}
+.form-logo-wrap{display:flex;align-items:center;gap:10px;margin-bottom:18px;}
+.form-logo-svg{width:40px;height:40px;}
+.form-logo-text{font-family:'DM Serif Display',serif;font-size:26px;color:var(--blue);}
+.hdr-logo-wrap{display:flex;align-items:center;gap:8px;}
+.hdr-logo-svg{width:30px;height:30px;}
 </style>
 </head>
 <body>
@@ -278,8 +288,21 @@ body{font-family:'DM Sans',sans-serif;background:var(--g1);color:var(--g7);min-h
 <!-- ═══════════════ SPLASH ═══════════════ -->
 <div class="page active" id="pageSplash">
   <div class="splash">
-    <div class="splash-logo">Ahurus</div>
-    <div class="splash-tag">La forma inteligente de ahorrar</div>
+    <div class="splash-logo-img">
+      <svg class="splash-logo-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <rect width="100" height="100" rx="22" fill="#1E3A8A"/>
+  <path d="M50 12 L78 72 L65 72 L58 55 L42 55 L35 72 L22 72 Z" fill="white" opacity="0.95"/>
+  <path d="M45 45 L55 45 L50 30 Z" fill="#1E3A8A" opacity="0.9"/>
+  <rect x="38" y="62" width="8" height="14" rx="3" fill="#60A5FA"/>
+  <rect x="50" y="55" width="8" height="21" rx="3" fill="#3B82F6"/>
+  <rect x="62" y="48" width="10" height="28" rx="3" fill="#2563EB"/>
+  <path d="M36 70 Q52 58 75 50" stroke="white" stroke-width="2.5" fill="none" stroke-linecap="round" opacity="0.4"/>
+</svg>
+      <div>
+        <div class="splash-logo-text">Ahurus</div>
+        <div class="splash-logo-tagline">La forma inteligente de ahorrar</div>
+      </div>
+    </div>
     <div class="splash-feats">
       <div class="splash-feat">
         <div class="feat-ico"><i class="ti ti-calculator"></i></div>
@@ -302,7 +325,14 @@ body{font-family:'DM Sans',sans-serif;background:var(--g1);color:var(--g7);min-h
 <!-- ═══════════════ REGISTER ═══════════════ -->
 <div class="page" id="pageRegister">
   <div class="form-page">
-    <div class="form-logo">Ahurus</div>
+    <div class="form-logo-wrap"><svg class="form-logo-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <rect width="100" height="100" rx="22" fill="#185FA5"/>
+  <path d="M50 12 L78 72 L65 72 L58 55 L42 55 L35 72 L22 72 Z" fill="white" opacity="0.95"/>
+  <path d="M45 45 L55 45 L50 30 Z" fill="#185FA5" opacity="0.9"/>
+  <rect x="38" y="62" width="8" height="14" rx="3" fill="#60A5FA"/>
+  <rect x="50" y="55" width="8" height="21" rx="3" fill="#93C5FD"/>
+  <rect x="62" y="48" width="10" height="28" rx="3" fill="#BFDBFE"/>
+</svg><div class="form-logo-text">Ahurus</div></div>
     <div class="form-title">Crea tu cuenta</div>
     <div class="form-sub">Gratis · Sin tarjeta · Historial guardado siempre</div>
     <div class="err-msg" id="registerErr"></div>
@@ -318,7 +348,14 @@ body{font-family:'DM Sans',sans-serif;background:var(--g1);color:var(--g7);min-h
 <!-- ═══════════════ LOGIN ═══════════════ -->
 <div class="page" id="pageLogin">
   <div class="form-page">
-    <div class="form-logo">Ahurus</div>
+    <div class="form-logo-wrap"><svg class="form-logo-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <rect width="100" height="100" rx="22" fill="#185FA5"/>
+  <path d="M50 12 L78 72 L65 72 L58 55 L42 55 L35 72 L22 72 Z" fill="white" opacity="0.95"/>
+  <path d="M45 45 L55 45 L50 30 Z" fill="#185FA5" opacity="0.9"/>
+  <rect x="38" y="62" width="8" height="14" rx="3" fill="#60A5FA"/>
+  <rect x="50" y="55" width="8" height="21" rx="3" fill="#93C5FD"/>
+  <rect x="62" y="48" width="10" height="28" rx="3" fill="#BFDBFE"/>
+</svg><div class="form-logo-text">Ahurus</div></div>
     <div class="form-title">Bienvenido de vuelta</div>
     <div class="form-sub">Entra para ver tus informes y crear uno nuevo.</div>
     <div class="err-msg" id="loginErr"></div>
@@ -333,7 +370,14 @@ body{font-family:'DM Sans',sans-serif;background:var(--g1);color:var(--g7);min-h
 <!-- ═══════════════ FASE 1: PERFIL (4 preguntas) ═══════════════ -->
 <div class="page" id="pageProfile">
   <div class="hdr">
-    <div class="hdr-top"><div class="logo">Ahurus</div><span class="hdr-badge" id="profBadge">Paso 1 de 4</span></div>
+    <div class="hdr-top"><div class="hdr-logo-wrap"><svg class="hdr-logo-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <rect width="100" height="100" rx="22" fill="rgba(255,255,255,0.2)"/>
+  <path d="M50 12 L78 72 L65 72 L58 55 L42 55 L35 72 L22 72 Z" fill="white" opacity="0.95"/>
+  <path d="M45 45 L55 45 L50 30 Z" fill="rgba(24,95,165,0.8)" opacity="0.9"/>
+  <rect x="38" y="62" width="8" height="14" rx="3" fill="rgba(255,255,255,0.5)"/>
+  <rect x="50" y="55" width="8" height="21" rx="3" fill="rgba(255,255,255,0.7)"/>
+  <rect x="62" y="48" width="10" height="28" rx="3" fill="rgba(255,255,255,0.9)"/>
+</svg><div class="logo">Ahurus</div></div><span class="hdr-badge" id="profBadge">Paso 1 de 4</span></div>
     <div class="hdr-sub" id="profSub">Cuéntanos un poco sobre ti</div>
     <div class="prog-wrap"><div class="prog-fill" id="profProg" style="width:0%"></div></div>
   </div>
@@ -459,7 +503,14 @@ body{font-family:'DM Sans',sans-serif;background:var(--g1);color:var(--g7);min-h
 <div class="page" id="pageMain">
   <div class="main-hdr">
     <div class="main-hdr-top">
-      <div class="logo">Ahurus</div>
+      <div class="hdr-logo-wrap"><svg class="hdr-logo-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <rect width="100" height="100" rx="22" fill="rgba(255,255,255,0.2)"/>
+  <path d="M50 12 L78 72 L65 72 L58 55 L42 55 L35 72 L22 72 Z" fill="white" opacity="0.95"/>
+  <path d="M45 45 L55 45 L50 30 Z" fill="rgba(24,95,165,0.8)" opacity="0.9"/>
+  <rect x="38" y="62" width="8" height="14" rx="3" fill="rgba(255,255,255,0.5)"/>
+  <rect x="50" y="55" width="8" height="21" rx="3" fill="rgba(255,255,255,0.7)"/>
+  <rect x="62" y="48" width="10" height="28" rx="3" fill="rgba(255,255,255,0.9)"/>
+</svg><div class="logo">Ahurus</div></div>
       <button onclick="startNew()" class="btn-new"><i class="ti ti-plus"></i> Nuevo análisis</button>
     </div>
     <div class="hdr-sub" id="mainGreeting">Bienvenido/a</div>
@@ -478,7 +529,14 @@ body{font-family:'DM Sans',sans-serif;background:var(--g1);color:var(--g7);min-h
 
 <!-- ═══════════════ PERFIL ═══════════════ -->
 <div class="page" id="pagePerfil">
-  <div class="hdr"><div class="hdr-top"><div class="logo">Ahurus</div></div><div class="hdr-sub">Tu perfil</div></div>
+  <div class="hdr"><div class="hdr-top"><div class="hdr-logo-wrap"><svg class="hdr-logo-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <rect width="100" height="100" rx="22" fill="rgba(255,255,255,0.2)"/>
+  <path d="M50 12 L78 72 L65 72 L58 55 L42 55 L35 72 L22 72 Z" fill="white" opacity="0.95"/>
+  <path d="M45 45 L55 45 L50 30 Z" fill="rgba(24,95,165,0.8)" opacity="0.9"/>
+  <rect x="38" y="62" width="8" height="14" rx="3" fill="rgba(255,255,255,0.5)"/>
+  <rect x="50" y="55" width="8" height="21" rx="3" fill="rgba(255,255,255,0.7)"/>
+  <rect x="62" y="48" width="10" height="28" rx="3" fill="rgba(255,255,255,0.9)"/>
+</svg><div class="logo">Ahurus</div></div></div><div class="hdr-sub">Tu perfil</div></div>
   <div class="perfil-page">
     <div class="perfil-avatar"><i class="ti ti-user"></i></div>
     <div class="perfil-nombre" id="perfilNombre">—</div>
