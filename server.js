@@ -315,7 +315,7 @@ function generateLocalReport(data) {
   // Generar comparativa
   const comparativa = Object.entries(estandares).map(([catId, estandar]) => {
     const tuyo = totalesPorCat[catId] || 0;
-    const catNombres = { vivienda:'Vivienda', alimentacion:'Alimentación', transporte:'Transporte', seguros:'Seguros', educacion:'Educación', ropa:'Ropa y calzado', salud:'Salud', ocio:'Ocio', hogar:'Hogar y personal' };
+    const catNombres = { vivienda:'Vivienda', alimentacion:'Alimentación', transporte:'Transporte', seguros:'Seguros', educacion:'Educación', ropa:'Ropa y calzado', salud:'Salud', ocio:'Ocio', hogar:'Cuidado personal' };
     if(tuyo === 0 && estandar === 0) return null;
     return { categoria: catNombres[catId] || catId, emoji: catEmojis[catId]||'💶', tuyo, estandar };
   }).filter(Boolean);
