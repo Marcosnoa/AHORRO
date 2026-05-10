@@ -31,26 +31,37 @@ function admin(req, res, next) {
 
 // ─── REGISTER ────────────────────────────────────────────────────────────────
 app.post('/api/register', async (req, res) => {
-  const { nombre, email, password } = req.body;
-  if (!nombre || !email || !password) return res.status(400).json({ error: 'Todos los campos son obligatorios' });
-  const { data: ex } = await supabase.from('usuarios').select('id').eq('email', email).single();
-  if (ex) return res.status(400).json({ error: 'Ya existe una cuenta con ese email' });
-  const hash = await bcrypt.hash(password, 10);
-  const { data, error } = await supabase.from('usuarios').insert([{ nombre, email, password_hash: hash, es_admin: false }]).select().single();
-  if (error) return res.status(500).json({ error: 'Error al crear la cuenta' });
-  const token = jwt.sign({ id: data.id, email: data.email, nombre: data.nombre, isAdmin: false }, JWT_SECRET, { expiresIn: '30d' });
-  res.json({ token, usuario: { id: data.id, nombre: data.nombre, email: data.email, isAdmin: false } });
+  try {
+    const { nombre, email, password } = req.body;
+    if (!nombre || !email || !password) return res.status(400).json({ error: 'Todos los campos son obligatorios' });
+    const { data: ex } = await supabase.from('usuarios').select('id').eq('email', email).maybeSingle();
+    if (ex) return res.status(400).json({ error: 'Ya existe una cuenta con ese email' });
+    const hash = await bcrypt.hash(password, 10);
+    const { data, error } = await supabase.from('usuarios').insert([{ nombre, email, password_hash: hash, es_admin: false }]).select().single();
+    if (error) return res.status(500).json({ error: 'Error al crear la cuenta: ' + error.message });
+    const token = jwt.sign({ id: data.id, email: data.email, nombre: data.nombre, isAdmin: false }, JWT_SECRET, { expiresIn: '30d' });
+    res.json({ token, usuario: { id: data.id, nombre: data.nombre, email: data.email, isAdmin: false } });
+  } catch(e) {
+    console.error('Register error:', e);
+    res.status(500).json({ error: 'Error interno del servidor: ' + e.message });
+  }
 });
 
 // ─── LOGIN ────────────────────────────────────────────────────────────────────
 app.post('/api/login', async (req, res) => {
-  const { email, password } = req.body;
-  const { data: user } = await supabase.from('usuarios').select('*').eq('email', email).single();
-  if (!user) return res.status(400).json({ error: 'Email o contraseña incorrectos' });
-  const ok = await bcrypt.compare(password, user.password_hash);
-  if (!ok) return res.status(400).json({ error: 'Email o contraseña incorrectos' });
-  const token = jwt.sign({ id: user.id, email: user.email, nombre: user.nombre, isAdmin: user.es_admin }, JWT_SECRET, { expiresIn: '30d' });
-  res.json({ token, usuario: { id: user.id, nombre: user.nombre, email: user.email, isAdmin: user.es_admin } });
+  try {
+    const { email, password } = req.body;
+    if (!email || !password) return res.status(400).json({ error: 'Email y contraseña son obligatorios' });
+    const { data: user } = await supabase.from('usuarios').select('*').eq('email', email).maybeSingle();
+    if (!user) return res.status(400).json({ error: 'Email o contraseña incorrectos' });
+    const ok = await bcrypt.compare(password, user.password_hash);
+    if (!ok) return res.status(400).json({ error: 'Email o contraseña incorrectos' });
+    const token = jwt.sign({ id: user.id, email: user.email, nombre: user.nombre, isAdmin: user.es_admin }, JWT_SECRET, { expiresIn: '30d' });
+    res.json({ token, usuario: { id: user.id, nombre: user.nombre, email: user.email, isAdmin: user.es_admin } });
+  } catch(e) {
+    console.error('Login error:', e);
+    res.status(500).json({ error: 'Error interno del servidor: ' + e.message });
+  }
 });
 
 // ─── GENERATE REPORT ─────────────────────────────────────────────────────────
