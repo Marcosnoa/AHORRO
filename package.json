@@ -1,6 +1,7 @@
 {
-  "name": "ahorri-v2",
-  "version": "1.0.0",
+  "name": "ahurus",
+  "version": "2.0.0",
+  "description": "Ahurus - La forma inteligente de ahorrar",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
