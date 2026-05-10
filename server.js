@@ -80,7 +80,9 @@ app.post('/api/generar-informe', auth, async (req, res) => {
         messages: [{ role: 'user', content: buildPrompt(expenseData) }]
       });
       console.log('Respuesta de Anthropic recibida correctamente');
-      const text = message.content[0].text.replace(/```json/g,'').replace(/```html/g,'').replace(/```/g,'').trim();
+      let text = message.content[0].text.replace(/```json/g,'').replace(/```html/g,'').replace(/```/g,'').trim();
+      // Clean literal \n characters that AI sometimes outputs as text
+      text = text.replace(/\\n/g, '').replace(/\n\n/g, '').replace(/^\s*\n/gm, '');
       result = parseAIResponse(text, expenseData);
     } catch (e) {
       console.error('ERROR en Anthropic API:', e.message);
@@ -233,15 +235,28 @@ Genera 3 pasos MUY CONCRETOS ordenados por impacto:
 <h3>💡 Gastos invisibles detectados en tu perfil</h3>
 <p>Basándote en su perfil específico (${profile.familia}, ${profile.tamano} en ${profile.comunidad}), identifica 4-5 gastos invisibles típicos CON ESTIMACIÓN EN EUROS de cuánto pueden sumarle al mes sin que se dé cuenta.</p>
 
-IMPORTANTE:
-- Todo debe estar calibrado para ${profile.comunidad}, no generalices para toda España
-- Menciona servicios, supermercados y opciones reales disponibles en ${profile.comunidad}
-- Tono cercano y personal, habla de "tú" si vive solo o "vosotros" si es familia
-- El ahorro potencial debe ser realista, no exagerado
-- Solo HTML limpio dentro del campo "html", sin etiquetas markdown`;
+REGLAS CRÍTICAS:
+- NUNCA uses \n, \n\n ni saltos de línea literales en el HTML — usa solo etiquetas HTML
+- Si el perfil es "persona sola", usa SIEMPRE "tú" y habla de UNA sola persona. NUNCA digas "vosotros", "pareja" ni "dos personas"
+- Si es familia, usa "vosotros" y menciona el número exacto de personas (${profile.personas})
+- Gastos invisibles: sé REALISTA. Para una persona sola, el café puede ser 20-30€/mes, no 160€. Para familia de 4, máximo 60-80€ en cafés. No multipliques por personas de forma mecánica
+- Calibra TODO para ${profile.comunidad} con datos reales
+- El ahorro potencial debe ser realista y alcanzable, no exagerado
+- Solo HTML limpio dentro del campo "html", absolutamente sin \n ni \n\n ni markdown`;
 }
 
 // ─── PARSE AI RESPONSE ────────────────────────────────────────────────────────
+function cleanHtml(html) {
+  if (!html) return '';
+  // Remove literal \n characters that AI sometimes outputs
+  return html
+    .replace(/\\n/g, ' ')
+    .replace(/\n/g, ' ')
+    .replace(/\t/g, ' ')
+    .replace(/  +/g, ' ')
+    .trim();
+}
+
 function parseAIResponse(text, expenseData) {
   try {
     const jsonMatch = text.match(/\{[\s\S]*\}/);
@@ -251,7 +266,7 @@ function parseAIResponse(text, expenseData) {
       comparativa: parsed.comparativa || [],
       totalDeclarado: parsed.totalDeclarado || expenseData.totalDeclarado || 0,
       ahorroEstimado: parsed.ahorroEstimado || 0,
-      html_content: parsed.html || parsed.html_content || generateLocalReport(expenseData).html_content
+      html_content: cleanHtml(parsed.html || parsed.html_content || generateLocalReport(expenseData).html_content)
     };
   } catch(e) {
     const htmlMatch = text.match(/<[\s\S]*>/);
@@ -259,7 +274,7 @@ function parseAIResponse(text, expenseData) {
       comparativa: [],
       totalDeclarado: expenseData.totalDeclarado || 0,
       ahorroEstimado: 0,
-      html_content: htmlMatch ? htmlMatch[0] : text
+      html_content: cleanHtml(htmlMatch ? htmlMatch[0] : text)
     };
   }
 }
