@@ -92,7 +92,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--g1);color:var(--g7);min-h
 .expense-total-bar{background:var(--blue-p);border-bottom:1px solid var(--blue-l);padding:12px 20px;display:flex;justify-content:space-between;align-items:center;}
 .etb-label{font-size:12px;color:var(--blue-d);font-weight:500;}
 .etb-amount{font-size:20px;font-weight:700;color:var(--blue-d);}
-.expense-cats{padding:12px 16px;}
+.expense-cats{padding:12px 16px 100px 16px;}
 .expense-cat{background:var(--white);border:1px solid var(--g1);border-radius:var(--rl);margin-bottom:10px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.05);}
 .expense-cat-hdr{display:flex;align-items:center;gap:12px;padding:13px 14px;cursor:pointer;}
 .expense-cat-ico{width:36px;height:36px;border-radius:var(--r);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
@@ -672,13 +672,11 @@ const CATS = [
     ]
   },
   {
-    id:'hogar', name:'Hogar y personal', emoji:'🧴', color:'#6B7280',
-    desc:'Higiene, limpieza, mantenimiento y varios',
+    id:'hogar', name:'Cuidado personal', emoji:'🧴', color:'#6B7280',
+    desc:'Peluquería, estética y productos de cuidado personal',
     subs:[
-      {id:'higiene_limpieza', label:'Productos higiene y limpieza', hint:'Mensual'},
-      {id:'peluqueria', label:'Peluquería y estética', hint:'Media mensual'},
-      {id:'mantenimiento_hogar', label:'Mantenimiento del hogar', hint:'Fontanero, pintura... prorrateado'},
-      {id:'otros_varios', label:'Otros gastos varios', hint:'Regalos, lotería, imprevistos...'},
+      {id:'peluqueria', label:'Peluquería y estética', hint:'Peluquero, barbero, salón de belleza...'},
+      {id:'cremas_perfumes', label:'Cremas y perfumes', hint:'Cosmética, perfumes, productos de cuidado...'},
     ]
   },
 ];
