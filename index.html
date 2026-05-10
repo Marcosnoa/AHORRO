@@ -3,43 +3,17 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ahorri — Tu plan de ahorro inteligente</title>
-<meta name="description" content="Descubre cuánto gasta tu familia de verdad y cómo ahorrar cada mes.">
+<title>Ahurus — La forma inteligente de ahorrar</title>
+<meta name="description" content="La forma inteligente de ahorrar.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=DM+Serif+Display&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
 <style>
-:root {
-  --blue-dark: #0C447C;
-  --blue-main: #185FA5;
-  --blue-mid:  #378ADD;
-  --blue-light:#B5D4F4;
-  --blue-pale: #E6F1FB;
-  --green-dark:#085041;
-  --green-main:#1D9E75;
-  --green-light:#E1F5EE;
-  --amber:     #EF9F27;
-  --amber-lt:  #FAEEDA;
-  --red:       #E24B4A;
-  --red-lt:    #FCEBEB;
-  --gray-900:  #111827;
-  --gray-700:  #374151;
-  --gray-500:  #6B7280;
-  --gray-300:  #D1D5DB;
-  --gray-100:  #F3F4F6;
-  --white:     #ffffff;
-  --r:12px; --rl:16px; --rxl:24px;
-  --shadow: 0 2px 16px rgba(24,95,165,0.10);
-}
+:root{--blue-dark:#0C447C;--blue-main:#185FA5;--blue-mid:#378ADD;--blue-light:#B5D4F4;--blue-pale:#E6F1FB;--green-dark:#085041;--green-main:#1D9E75;--green-light:#E1F5EE;--amber:#EF9F27;--amber-lt:#FAEEDA;--red:#E24B4A;--red-lt:#FCEBEB;--gray-900:#111827;--gray-700:#374151;--gray-500:#6B7280;--gray-300:#D1D5DB;--gray-100:#F3F4F6;--white:#ffffff;--r:12px;--rl:16px;--rxl:24px;--shadow:0 2px 16px rgba(24,95,165,0.10);}
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:'DM Sans',sans-serif;background:var(--gray-100);color:var(--gray-700);min-height:100vh;}
 .app{max-width:520px;margin:0 auto;min-height:100vh;background:var(--white);box-shadow:var(--shadow);}
-
-/* ── PAGES ── */
-.page{display:none;}
-.page.active{display:block;}
-
-/* ── HEADER ── */
+.page{display:none;}.page.active{display:block;}
 .hdr{background:var(--blue-main);padding:18px 22px 24px;}
 .hdr-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;}
 .logo{font-family:'DM Serif Display',serif;font-size:26px;color:var(--white);letter-spacing:-.5px;}
@@ -48,8 +22,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--gray-100);color:var(--gra
 .hdr-sub{font-size:13px;color:var(--blue-light);}
 .progress-wrap{background:rgba(255,255,255,.2);border-radius:99px;height:4px;margin-top:14px;overflow:hidden;}
 .progress-fill{height:100%;background:var(--white);border-radius:99px;transition:width .4s ease;}
-
-/* ── SPLASH ── */
 .splash{background:var(--blue-main);min-height:100vh;display:flex;flex-direction:column;padding:52px 28px 44px;}
 .splash-logo{font-family:'DM Serif Display',serif;font-size:56px;color:var(--white);letter-spacing:-1.5px;margin-bottom:8px;}
 .splash-logo span{color:var(--blue-light);}
@@ -61,57 +33,40 @@ body{font-family:'DM Sans',sans-serif;background:var(--gray-100);color:var(--gra
 .feat-title{font-size:14px;font-weight:600;color:var(--white);margin-bottom:2px;}
 .feat-desc{font-size:12px;color:var(--blue-light);line-height:1.4;}
 .splash-cta{background:var(--white);color:var(--blue-dark);border:none;border-radius:var(--rl);padding:15px;font-size:15px;font-weight:600;width:100%;cursor:pointer;font-family:'DM Sans',sans-serif;margin-bottom:12px;}
-.splash-cta:hover{background:var(--blue-pale);}
 .splash-login{text-align:center;font-size:13px;color:var(--blue-light);}
 .splash-login span{color:var(--white);font-weight:500;cursor:pointer;text-decoration:underline;}
-
-/* ── FORMS (login/register) ── */
 .form-page{padding:28px 24px;}
 .form-title{font-size:22px;font-weight:600;color:var(--gray-900);margin-bottom:6px;}
-.form-sub{font-size:14px;color:var(--gray-500);margin-bottom:24px;line-height:1.5;}
+.form-sub{font-size:14px;color:var(--gray-500);margin-bottom:24px;}
 .field{margin-bottom:16px;}
 .field label{display:block;font-size:13px;font-weight:500;color:var(--gray-700);margin-bottom:5px;}
 .field input{width:100%;padding:11px 13px;border:1.5px solid var(--gray-300);border-radius:var(--r);font-size:15px;font-family:'DM Sans',sans-serif;color:var(--gray-900);outline:none;transition:border-color .15s;}
 .field input:focus{border-color:var(--blue-main);}
 .btn-primary{background:var(--blue-main);color:var(--white);border:none;border-radius:var(--r);padding:13px;font-size:15px;font-weight:600;width:100%;cursor:pointer;font-family:'DM Sans',sans-serif;margin-bottom:12px;}
-.btn-primary:hover{background:var(--blue-dark);}
-.btn-secondary{background:none;color:var(--blue-main);border:1.5px solid var(--blue-main);border-radius:var(--r);padding:11px;font-size:14px;font-weight:500;width:100%;cursor:pointer;font-family:'DM Sans',sans-serif;}
 .form-switch{text-align:center;font-size:13px;color:var(--gray-500);margin-top:14px;}
 .form-switch span{color:var(--blue-main);font-weight:500;cursor:pointer;}
 .err-msg{background:var(--red-lt);border:1px solid #F7C1C1;border-radius:var(--r);padding:10px 13px;font-size:13px;color:#791F1F;margin-bottom:14px;display:none;}
-
-/* ── QUESTIONNAIRE ── */
 .q-body{padding:22px;}
 .q-label{font-size:11px;font-weight:600;color:var(--blue-main);text-transform:uppercase;letter-spacing:.08em;margin-bottom:5px;}
 .q-title{font-size:19px;font-weight:600;color:var(--gray-900);margin-bottom:6px;line-height:1.3;}
 .q-hint{font-size:13px;color:var(--gray-500);margin-bottom:18px;line-height:1.5;}
 .opts-col{display:flex;flex-direction:column;gap:9px;margin-bottom:18px;}
-.opts-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:18px;}
 .opt{background:var(--white);border:1.5px solid var(--gray-300);border-radius:var(--rl);padding:13px;cursor:pointer;text-align:left;font-family:'DM Sans',sans-serif;transition:all .15s;}
 .opt:hover{border-color:var(--blue-mid);background:var(--blue-pale);}
 .opt.sel{border:2px solid var(--blue-main);background:var(--blue-pale);}
 .opt-ico{font-size:21px;color:var(--blue-main);display:block;margin-bottom:5px;}
-.opt.sel .opt-ico{color:var(--blue-dark);}
 .opt-lbl{font-size:13px;font-weight:600;color:var(--gray-900);}
 .opt-sub{font-size:11px;color:var(--gray-500);margin-top:1px;}
 .igroup{margin-bottom:14px;}
 .igroup label{display:block;font-size:13px;font-weight:500;color:var(--gray-700);margin-bottom:5px;}
-.igroup input,.igroup select{width:100%;padding:11px 13px;border:1.5px solid var(--gray-300);border-radius:var(--r);font-size:14px;font-family:'DM Sans',sans-serif;color:var(--gray-900);background:var(--white);outline:none;transition:border-color .15s;}
-.igroup input:focus,.igroup select:focus{border-color:var(--blue-main);}
-.row2{display:grid;grid-template-columns:1fr 1fr;gap:11px;}
+.igroup input,.igroup select{width:100%;padding:11px 13px;border:1.5px solid var(--gray-300);border-radius:var(--r);font-size:14px;font-family:'DM Sans',sans-serif;color:var(--gray-900);background:var(--white);outline:none;}
 .chk-list{display:flex;flex-direction:column;gap:7px;margin-bottom:18px;}
-.chk-row{display:flex;align-items:center;gap:11px;padding:11px 13px;border:1.5px solid var(--gray-300);border-radius:var(--r);cursor:pointer;transition:all .15s;}
-.chk-row:hover{border-color:var(--blue-mid);background:var(--blue-pale);}
+.chk-row{display:flex;align-items:center;gap:11px;padding:11px 13px;border:1.5px solid var(--gray-300);border-radius:var(--r);cursor:pointer;}
 .chk-row input[type=checkbox]{accent-color:var(--blue-main);width:17px;height:17px;flex-shrink:0;}
 .chk-row label{font-size:13px;color:var(--gray-900);cursor:pointer;}
-.info-note{background:var(--blue-pale);border:1px solid var(--blue-light);border-radius:var(--r);padding:11px 13px;font-size:12px;color:var(--blue-dark);line-height:1.5;margin-bottom:14px;display:flex;gap:7px;}
-.info-note i{flex-shrink:0;font-size:14px;margin-top:1px;}
 .nav-row{display:flex;gap:10px;margin-top:6px;}
 .btn-back{background:none;border:1.5px solid var(--gray-300);border-radius:var(--r);padding:11px 18px;font-size:13px;color:var(--gray-500);cursor:pointer;font-family:'DM Sans',sans-serif;flex-shrink:0;}
 .btn-next{background:var(--blue-main);color:var(--white);border:none;border-radius:var(--r);padding:11px 20px;font-size:14px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;flex:1;}
-.btn-next:hover{background:var(--blue-dark);}
-
-/* ── LOADING ── */
 .loading-page{padding:60px 24px;text-align:center;}
 .spinner{width:52px;height:52px;border:3px solid var(--blue-pale);border-top-color:var(--blue-main);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 20px;}
 @keyframes spin{to{transform:rotate(360deg)}}
@@ -119,11 +74,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--gray-100);color:var(--gra
 .loading-page p{font-size:14px;color:var(--gray-500);line-height:1.6;}
 .dots{display:flex;justify-content:center;gap:6px;margin-top:18px;}
 .dot{width:8px;height:8px;border-radius:50%;background:var(--blue-light);animation:pulse 1.2s ease-in-out infinite;}
-.dot:nth-child(2){animation-delay:.2s;}
-.dot:nth-child(3){animation-delay:.4s;}
+.dot:nth-child(2){animation-delay:.2s;}.dot:nth-child(3){animation-delay:.4s;}
 @keyframes pulse{0%,100%{opacity:.3;transform:scale(.8)}50%{opacity:1;transform:scale(1)}}
-
-/* ── REPORT ── */
 .report-page{padding-bottom:80px;}
 .report-hdr{background:var(--blue-main);padding:18px 22px 22px;}
 .report-hdr-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;}
@@ -134,8 +86,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--gray-100);color:var(--gra
 .rsh-amount{font-size:42px;font-weight:700;color:var(--white);line-height:1;}
 .rsh-sub{font-size:12px;color:var(--blue-light);margin-top:3px;}
 .report-body{padding:20px;}
-
-/* Informe HTML generado */
 .report-body .intro-personal{background:var(--blue-pale);border:1px solid var(--blue-light);border-radius:var(--rl);padding:14px;font-size:14px;color:var(--blue-dark);line-height:1.6;margin-bottom:18px;}
 .report-body h3{font-size:16px;font-weight:600;color:var(--gray-900);margin:20px 0 12px;padding-bottom:6px;border-bottom:2px solid var(--blue-pale);}
 .report-body h4{font-size:14px;font-weight:600;color:var(--gray-900);margin-bottom:5px;}
@@ -153,30 +103,21 @@ body{font-family:'DM Sans',sans-serif;background:var(--gray-100);color:var(--gra
 .report-body .resumen-ahorro{background:var(--blue-main);border-radius:var(--rl);padding:16px;text-align:center;margin-top:16px;}
 .report-body .resumen-ahorro p{color:var(--white);font-size:14px;}
 .report-body .resumen-ahorro strong{color:var(--blue-light);}
-.report-body .invisible-box{background:var(--amber-lt);border:1px solid #FAC775;border-radius:var(--rl);padding:14px;margin:10px 0;}
-.report-body .saving-highlight{background:var(--green-light);border:1px solid #9FE1CB;border-radius:var(--r);padding:9px 13px;font-size:13px;color:var(--green-dark);font-weight:600;margin:8px 0;}
-
-/* Gráfico de barras */
 .chart-wrap{margin:16px 0;}
 .chart-bar-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
-.chart-bar-label{font-size:12px;color:var(--gray-700);width:120px;flex-shrink:0;}
+.chart-bar-label{font-size:12px;color:var(--gray-700);width:130px;flex-shrink:0;}
 .chart-bar-outer{flex:1;background:var(--gray-100);border-radius:99px;height:10px;overflow:hidden;}
 .chart-bar-inner{height:100%;border-radius:99px;background:var(--blue-main);transition:width 1s ease;}
 .chart-bar-val{font-size:12px;font-weight:500;color:var(--gray-700);width:48px;text-align:right;flex-shrink:0;}
-
-/* ── BOTTOM NAV ── */
 .bottom-nav{background:var(--white);border-top:1px solid var(--gray-100);display:flex;padding:9px 0 5px;position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:520px;}
 .bn-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;}
 .bn-item i{font-size:22px;color:var(--gray-300);}
 .bn-item span{font-size:10px;color:var(--gray-300);font-weight:500;}
 .bn-item.active i,.bn-item.active span{color:var(--blue-main);}
-
-/* ── HISTORIAL ── */
 .hist-page{padding:20px 20px 90px;}
 .hist-title{font-size:20px;font-weight:600;color:var(--gray-900);margin-bottom:4px;}
 .hist-sub{font-size:13px;color:var(--gray-500);margin-bottom:18px;}
-.hist-card{background:var(--white);border:1px solid var(--gray-100);border-radius:var(--rl);padding:14px;margin-bottom:10px;box-shadow:0 1px 4px rgba(0,0,0,.04);cursor:pointer;transition:box-shadow .15s;}
-.hist-card:hover{box-shadow:0 4px 12px rgba(24,95,165,.12);}
+.hist-card{background:var(--white);border:1px solid var(--gray-100);border-radius:var(--rl);padding:14px;margin-bottom:10px;box-shadow:0 1px 4px rgba(0,0,0,.04);cursor:pointer;}
 .hist-card-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;}
 .hist-card-date{font-size:11px;color:var(--gray-500);}
 .hist-card-saving{font-size:14px;font-weight:600;color:var(--green-main);}
@@ -184,8 +125,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--gray-100);color:var(--gra
 .hist-empty{text-align:center;padding:40px 20px;}
 .hist-empty i{font-size:40px;color:var(--gray-300);margin-bottom:12px;}
 .hist-empty p{font-size:14px;color:var(--gray-500);}
-
-/* ── PERFIL ── */
 .perfil-page{padding:20px 20px 90px;}
 .perfil-avatar{width:64px;height:64px;border-radius:50%;background:var(--blue-pale);display:flex;align-items:center;justify-content:center;margin-bottom:12px;}
 .perfil-avatar i{font-size:32px;color:var(--blue-main);}
@@ -195,8 +134,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--gray-100);color:var(--gra
 .perfil-stat-label{font-size:13px;color:var(--gray-700);}
 .perfil-stat-val{font-size:14px;font-weight:600;color:var(--blue-main);}
 .btn-logout{background:none;border:1.5px solid var(--red);border-radius:var(--r);padding:11px;font-size:14px;color:var(--red);cursor:pointer;font-family:'DM Sans',sans-serif;width:100%;margin-top:16px;}
-
-/* ── ADMIN ── */
 .admin-page{padding:0 0 90px;}
 .admin-hdr{background:var(--gray-900);padding:18px 20px;}
 .admin-hdr-title{font-size:18px;font-weight:600;color:var(--white);}
@@ -211,7 +148,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--gray-100);color:var(--gra
 .stat-card-val{font-size:28px;font-weight:700;color:var(--gray-900);}
 .admin-list-title{font-size:13px;font-weight:600;color:var(--gray-900);margin-bottom:10px;}
 .admin-user-card{background:var(--white);border:1px solid var(--gray-100);border-radius:var(--r);padding:12px;margin-bottom:8px;cursor:pointer;}
-.admin-user-card:hover{background:var(--blue-pale);}
 .auc-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;}
 .auc-nombre{font-size:14px;font-weight:500;color:var(--gray-900);}
 .auc-badge{font-size:10px;background:var(--blue-pale);color:var(--blue-dark);border-radius:99px;padding:2px 8px;}
@@ -232,34 +168,23 @@ body{font-family:'DM Sans',sans-serif;background:var(--gray-100);color:var(--gra
 <body>
 <div class="app" id="app">
 
-<!-- SPLASH -->
 <div class="page active" id="pageSplash">
   <div class="splash">
-    <div class="splash-logo">ahorri<span>.</span></div>
-    <div class="splash-tag">Descubre cómo gasta de verdad tu familia cada día</div>
+    <div class="splash-logo">Ahurus</div>
+    <div class="splash-tag">La forma inteligente de ahorrar</div>
     <div class="splash-feats">
-      <div class="splash-feat">
-        <div class="feat-icon"><i class="ti ti-brain"></i></div>
-        <div><div class="feat-title">8 preguntas, IA hace el resto</div><div class="feat-desc">Deduce tu gasto en aseo diario, energía, alimentación y ocio sin que tengas que calcular nada</div></div>
-      </div>
-      <div class="splash-feat">
-        <div class="feat-icon"><i class="ti ti-chart-pie"></i></div>
-        <div><div class="feat-title">Informe visual único para ti</div><div class="feat-desc">No es un modelo estándar: la IA crea un análisis personalizado para tu familia y forma de vida</div></div>
-      </div>
-      <div class="splash-feat">
-        <div class="feat-icon"><i class="ti ti-history"></i></div>
-        <div><div class="feat-title">Historial y evolución</div><div class="feat-desc">Guarda todos tus informes y ve cómo evoluciona tu ahorro mes a mes</div></div>
-      </div>
+      <div class="splash-feat"><div class="feat-icon"><i class="ti ti-brain"></i></div><div><div class="feat-title">11 preguntas clave, la IA hace el resto</div><div class="feat-desc">Deduce tu gasto real en seguros, educación, ropa, energía y mucho más</div></div></div>
+      <div class="splash-feat"><div class="feat-icon"><i class="ti ti-chart-pie"></i></div><div><div class="feat-title">Informe visual único para ti</div><div class="feat-desc">Análisis 100% personalizado basado en tu familia y forma de vida real</div></div></div>
+      <div class="splash-feat"><div class="feat-icon"><i class="ti ti-history"></i></div><div><div class="feat-title">Historial y evolución</div><div class="feat-desc">Guarda todos tus informes y ve cómo mejora tu ahorro mes a mes</div></div></div>
     </div>
     <button class="splash-cta" onclick="showPage('pageRegister')">Crear mi cuenta gratis <i class="ti ti-arrow-right"></i></button>
     <div class="splash-login">¿Ya tienes cuenta? <span onclick="showPage('pageLogin')">Entra aquí</span></div>
   </div>
 </div>
 
-<!-- REGISTER -->
 <div class="page" id="pageRegister">
   <div class="form-page">
-    <div style="font-size:28px;font-family:'DM Serif Display',serif;color:var(--blue-main);margin-bottom:20px;">ahorri<span style="color:var(--blue-light)">.</span></div>
+    <div style="font-size:28px;font-family:'DM Serif Display',serif;color:var(--blue-main);margin-bottom:20px;">Ahurus</div>
     <div class="form-title">Crea tu cuenta</div>
     <div class="form-sub">Gratis. Sin tarjeta. Tu historial siempre guardado.</div>
     <div class="err-msg" id="registerErr"></div>
@@ -272,10 +197,9 @@ body{font-family:'DM Sans',sans-serif;background:var(--gray-100);color:var(--gra
   </div>
 </div>
 
-<!-- LOGIN -->
 <div class="page" id="pageLogin">
   <div class="form-page">
-    <div style="font-size:28px;font-family:'DM Serif Display',serif;color:var(--blue-main);margin-bottom:20px;">ahorri<span style="color:var(--blue-light)">.</span></div>
+    <div style="font-size:28px;font-family:'DM Serif Display',serif;color:var(--blue-main);margin-bottom:20px;">Ahurus</div>
     <div class="form-title">Bienvenido de vuelta</div>
     <div class="form-sub">Entra para ver tus informes y crear uno nuevo.</div>
     <div class="err-msg" id="loginErr"></div>
@@ -287,63 +211,44 @@ body{font-family:'DM Sans',sans-serif;background:var(--gray-100);color:var(--gra
   </div>
 </div>
 
-<!-- QUESTIONNAIRE -->
 <div class="page" id="pageQ">
   <div class="hdr">
-    <div class="hdr-top">
-      <div class="logo">ahorri<span>.</span></div>
-      <span class="hdr-badge" id="qBadge">Paso 1 de 8</span>
-    </div>
+    <div class="hdr-top"><div class="logo">Ahurus</div><span class="hdr-badge" id="qBadge">Paso 1 de 11</span></div>
     <div class="hdr-sub" id="qSub">Cuéntanos sobre ti</div>
     <div class="progress-wrap"><div class="progress-fill" id="qProgress" style="width:0%"></div></div>
   </div>
 
-  <!-- Q1: Ubicación -->
   <div class="q-body" id="q1">
-    <div class="q-label">Paso 1 de 8 · Dónde vives</div>
+    <div class="q-label">Paso 1 de 11 · Dónde vives</div>
     <div class="q-title">¿Dónde vivís?</div>
-    <div class="q-hint">El lugar donde vives influye en el coste de la energía, los alimentos y el transporte.</div>
-    <div class="igroup">
-      <select id="qComunidad">
-        <option value="">Selecciona tu comunidad autónoma...</option>
-        <option>Andalucía</option><option>Aragón</option><option>Asturias</option>
-        <option>Baleares</option><option>Canarias</option><option>Cantabria</option>
-        <option>Castilla-La Mancha</option><option>Castilla y León</option>
-        <option>Cataluña</option><option>Extremadura</option><option>Galicia</option>
-        <option>La Rioja</option><option>Madrid</option><option>Murcia</option>
-        <option>Navarra</option><option>País Vasco</option><option>Valencia</option>
-        <option>Ceuta</option><option>Melilla</option>
-      </select>
-    </div>
+    <div class="q-hint">El lugar influye en energía, alimentos, transporte y coste de vida general.</div>
+    <div class="igroup"><select id="qComunidad"><option value="">Selecciona tu comunidad autónoma...</option><option>Andalucía</option><option>Aragón</option><option>Asturias</option><option>Baleares</option><option>Canarias</option><option>Cantabria</option><option>Castilla-La Mancha</option><option>Castilla y León</option><option>Cataluña</option><option>Extremadura</option><option>Galicia</option><option>La Rioja</option><option>Madrid</option><option>Murcia</option><option>Navarra</option><option>País Vasco</option><option>Valencia</option><option>Ceuta</option><option>Melilla</option></select></div>
     <div class="opts-col">
       <button class="opt" data-g="tamano" data-v="gran ciudad (más de 500.000 hab.)"><span class="opt-ico"><i class="ti ti-building-skyscraper"></i></span><span class="opt-lbl">Gran ciudad</span><span class="opt-sub">Más de 500.000 hab.</span></button>
-      <button class="opt" data-g="tamano" data-v="ciudad mediana (50.000-500.000 hab.)"><span class="opt-ico"><i class="ti ti-building"></i></span><span class="opt-lbl">Ciudad mediana</span><span class="opt-sub">50.000 – 500.000 hab.</span></button>
+      <button class="opt" data-g="tamano" data-v="ciudad mediana (50.000-500.000 hab.)"><span class="opt-ico"><i class="ti ti-building"></i></span><span class="opt-lbl">Ciudad mediana</span><span class="opt-sub">50.000–500.000 hab.</span></button>
       <button class="opt" data-g="tamano" data-v="pueblo o zona rural (menos de 50.000 hab.)"><span class="opt-ico"><i class="ti ti-home"></i></span><span class="opt-lbl">Pueblo o zona rural</span><span class="opt-sub">Menos de 50.000 hab.</span></button>
     </div>
     <div class="nav-row"><button class="btn-next" onclick="qNext(1)">Continuar <i class="ti ti-arrow-right"></i></button></div>
   </div>
 
-  <!-- Q2: Familia -->
   <div class="q-body" id="q2" style="display:none">
-    <div class="q-label">Paso 2 de 8 · Tu familia</div>
+    <div class="q-label">Paso 2 de 11 · Tu familia</div>
     <div class="q-title">¿Quiénes sois en casa?</div>
-    <div class="q-hint">La composición familiar determina el consumo de energía, agua, alimentación e higiene.</div>
+    <div class="q-hint">Determina el consumo real de energía, agua, alimentación e higiene.</div>
     <div class="opts-col">
       <button class="opt" data-g="familia" data-v="1 persona adulta (vivo solo/a)"><span class="opt-ico"><i class="ti ti-user"></i></span><span class="opt-lbl">Solo/a</span><span class="opt-sub">1 persona adulta</span></button>
       <button class="opt" data-g="familia" data-v="pareja sin hijos (2 adultos)"><span class="opt-ico"><i class="ti ti-users"></i></span><span class="opt-lbl">Pareja sin hijos</span><span class="opt-sub">2 adultos</span></button>
-      <button class="opt" data-g="familia" data-v="familia con hijos pequeños (menores de 12 años)"><span class="opt-ico"><i class="ti ti-baby-carriage"></i></span><span class="opt-lbl">Familia con hijos pequeños</span><span class="opt-sub">Hijos menores de 12 años</span></button>
-      <button class="opt" data-g="familia" data-v="familia con hijos adolescentes o jóvenes (12-25 años)"><span class="opt-ico"><i class="ti ti-friends"></i></span><span class="opt-lbl">Familia con adolescentes</span><span class="opt-sub">Hijos de 12 a 25 años</span></button>
-      <button class="opt" data-g="familia" data-v="familia multigeneracional (con abuelos u otros)"><span class="opt-ico"><i class="ti ti-building-community"></i></span><span class="opt-lbl">Familia multigeneracional</span><span class="opt-sub">Con abuelos u otros familiares</span></button>
+      <button class="opt" data-g="familia" data-v="familia con hijos pequeños (menores de 12 años)"><span class="opt-ico"><i class="ti ti-baby-carriage"></i></span><span class="opt-lbl">Familia con hijos pequeños</span><span class="opt-sub">Menores de 12 años</span></button>
+      <button class="opt" data-g="familia" data-v="familia con hijos adolescentes o jóvenes (12-25 años)"><span class="opt-ico"><i class="ti ti-friends"></i></span><span class="opt-lbl">Familia con adolescentes</span><span class="opt-sub">De 12 a 25 años</span></button>
+      <button class="opt" data-g="familia" data-v="familia multigeneracional (con abuelos u otros)"><span class="opt-ico"><i class="ti ti-building-community"></i></span><span class="opt-lbl">Familia multigeneracional</span><span class="opt-sub">Con abuelos u otros</span></button>
     </div>
     <div class="igroup"><label>Número total de personas en casa</label><input type="number" id="qPersonas" placeholder="Ej: 4" min="1" max="12"></div>
     <div class="nav-row"><button class="btn-back" onclick="qBack(2)"><i class="ti ti-arrow-left"></i></button><button class="btn-next" onclick="qNext(2)">Continuar <i class="ti ti-arrow-right"></i></button></div>
   </div>
 
-  <!-- Q3: Vivienda -->
   <div class="q-body" id="q3" style="display:none">
-    <div class="q-label">Paso 3 de 8 · Tu vivienda</div>
+    <div class="q-label">Paso 3 de 11 · Tu vivienda</div>
     <div class="q-title">¿Cómo es vuestra vivienda?</div>
-    <div class="q-hint">El tipo y situación de la vivienda determina muchos gastos: hipoteca, comunidad, mantenimiento, calefacción.</div>
     <div class="opts-col" style="margin-bottom:12px">
       <button class="opt" data-g="tipoVivienda" data-v="piso en edificio"><span class="opt-ico"><i class="ti ti-building"></i></span><span class="opt-lbl">Piso en edificio</span></button>
       <button class="opt" data-g="tipoVivienda" data-v="casa unifamiliar"><span class="opt-ico"><i class="ti ti-home-2"></i></span><span class="opt-lbl">Casa unifamiliar</span></button>
@@ -358,96 +263,132 @@ body{font-family:'DM Sans',sans-serif;background:var(--gray-100);color:var(--gra
     <div class="nav-row"><button class="btn-back" onclick="qBack(3)"><i class="ti ti-arrow-left"></i></button><button class="btn-next" onclick="qNext(3)">Continuar <i class="ti ti-arrow-right"></i></button></div>
   </div>
 
-  <!-- Q4: Energía -->
   <div class="q-body" id="q4" style="display:none">
-    <div class="q-label">Paso 4 de 8 · Energía</div>
+    <div class="q-label">Paso 4 de 11 · Energía</div>
     <div class="q-title">¿Cómo calentáis el hogar y el agua?</div>
-    <div class="q-hint">Este dato permite a la IA calcular con precisión el coste real de vuestras duchas, la cocina y la calefacción.</div>
+    <div class="q-hint">Permite calcular el coste real de duchas, cocina y calefacción.</div>
     <div class="opts-col">
       <button class="opt" data-g="sistemaEnergetico" data-v="gas natural (caldera de gas)"><span class="opt-ico"><i class="ti ti-flame"></i></span><span class="opt-lbl">Gas natural</span><span class="opt-sub">Caldera de gas en casa</span></button>
       <button class="opt" data-g="sistemaEnergetico" data-v="electricidad (termo eléctrico y radiadores)"><span class="opt-ico"><i class="ti ti-bolt"></i></span><span class="opt-lbl">Solo electricidad</span><span class="opt-sub">Termo eléctrico y radiadores</span></button>
-      <button class="opt" data-g="sistemaEnergetico" data-v="bomba de calor o aerotermia"><span class="opt-ico"><i class="ti ti-air-conditioning"></i></span><span class="opt-lbl">Bomba de calor / aerotermia</span><span class="opt-sub">Sistema moderno y eficiente</span></button>
-      <button class="opt" data-g="sistemaEnergetico" data-v="gasoil o propano (caldera de gasoil)"><span class="opt-ico"><i class="ti ti-droplet"></i></span><span class="opt-lbl">Gasoil o propano</span><span class="opt-sub">Caldera de gasoil o bombona</span></button>
-      <button class="opt" data-g="sistemaEnergetico" data-v="pellets o biomasa"><span class="opt-ico"><i class="ti ti-leaf"></i></span><span class="opt-lbl">Pellets o biomasa</span><span class="opt-sub">Estufa o caldera de pellets</span></button>
+      <button class="opt" data-g="sistemaEnergetico" data-v="bomba de calor o aerotermia"><span class="opt-ico"><i class="ti ti-air-conditioning"></i></span><span class="opt-lbl">Bomba de calor / aerotermia</span></button>
+      <button class="opt" data-g="sistemaEnergetico" data-v="gasoil o propano"><span class="opt-ico"><i class="ti ti-droplet"></i></span><span class="opt-lbl">Gasoil o propano</span></button>
+      <button class="opt" data-g="sistemaEnergetico" data-v="pellets o biomasa"><span class="opt-ico"><i class="ti ti-leaf"></i></span><span class="opt-lbl">Pellets o biomasa</span></button>
     </div>
     <div class="nav-row"><button class="btn-back" onclick="qBack(4)"><i class="ti ti-arrow-left"></i></button><button class="btn-next" onclick="qNext(4)">Continuar <i class="ti ti-arrow-right"></i></button></div>
   </div>
 
-  <!-- Q5: Estilo de vida -->
   <div class="q-body" id="q5" style="display:none">
-    <div class="q-label">Paso 5 de 8 · Estilo de vida</div>
-    <div class="q-title">¿Cómo definiríais vuestro estilo de vida?</div>
-    <div class="q-hint">Esta es la pregunta que más información da a la IA para personalizar vuestro informe. Sé honesto/a.</div>
-    <div class="opts-col">
-      <button class="opt" data-g="estiloVida" data-v="hogareño y tranquilo (preferimos quedarnos en casa, cocinamos mucho, poco ocio fuera)"><span class="opt-ico"><i class="ti ti-home-heart"></i></span><span class="opt-lbl">Hogareño y tranquilo</span><span class="opt-sub">Casa, cocina propia, poco ocio fuera</span></button>
-      <button class="opt" data-g="estiloVida" data-v="activo y deportista (gimnasio, actividades, deporte frecuente)"><span class="opt-ico"><i class="ti ti-run"></i></span><span class="opt-lbl">Activo y deportista</span><span class="opt-sub">Gimnasio, actividades, deporte</span></button>
-      <button class="opt" data-g="estiloVida" data-v="social y salidas frecuentes (restaurantes, bares, viajes, conciertos)"><span class="opt-ico"><i class="ti ti-confetti"></i></span><span class="opt-lbl">Social y con salidas</span><span class="opt-sub">Restaurantes, viajes, ocio exterior</span></button>
-      <button class="opt" data-g="estiloVida" data-v="mixto (equilibrio entre casa y ocio exterior, salidas moderadas)"><span class="opt-ico"><i class="ti ti-adjust"></i></span><span class="opt-lbl">Mixto y equilibrado</span><span class="opt-sub">Algo de todo, sin excesos</span></button>
-      <button class="opt" data-g="estiloVida" data-v="ahorrativo y consciente (cuidamos mucho los gastos, poco consumo)"><span class="opt-ico"><i class="ti ti-pig-money"></i></span><span class="opt-lbl">Ahorrativo y consciente</span><span class="opt-sub">Cuidamos los gastos, poco consumo</span></button>
+    <div class="q-label">Paso 5 de 11 · Seguros</div>
+    <div class="q-title">¿Qué seguros tenéis contratados?</div>
+    <div class="q-hint">Los seguros son uno de los gastos más subestimados. Marca todos los que tengáis.</div>
+    <div class="chk-list">
+      <div class="chk-row"><input type="checkbox" id="sg1" value="seguro del coche"><label for="sg1">Seguro del coche</label></div>
+      <div class="chk-row"><input type="checkbox" id="sg2" value="seguro del hogar"><label for="sg2">Seguro del hogar</label></div>
+      <div class="chk-row"><input type="checkbox" id="sg3" value="seguro de vida"><label for="sg3">Seguro de vida</label></div>
+      <div class="chk-row"><input type="checkbox" id="sg4" value="seguro médico privado"><label for="sg4">Seguro médico privado</label></div>
+      <div class="chk-row"><input type="checkbox" id="sg5" value="seguro dental"><label for="sg5">Seguro dental</label></div>
+      <div class="chk-row"><input type="checkbox" id="sg6" value="seguro de decesos"><label for="sg6">Seguro de decesos</label></div>
+      <div class="chk-row"><input type="checkbox" id="sg7" value="seguro de mascotas"><label for="sg7">Seguro de mascotas</label></div>
+      <div class="chk-row"><input type="checkbox" id="sg8" value="otros seguros"><label for="sg8">Otros seguros</label></div>
     </div>
     <div class="nav-row"><button class="btn-back" onclick="qBack(5)"><i class="ti ti-arrow-left"></i></button><button class="btn-next" onclick="qNext(5)">Continuar <i class="ti ti-arrow-right"></i></button></div>
   </div>
 
-  <!-- Q6: Transporte -->
   <div class="q-body" id="q6" style="display:none">
-    <div class="q-label">Paso 6 de 8 · Transporte</div>
-    <div class="q-title">¿Cómo os desplazáis al trabajo?</div>
+    <div class="q-label">Paso 6 de 11 · Educación</div>
+    <div class="q-title">¿Cómo es la educación de los hijos?</div>
+    <div class="q-hint">Si no tenéis hijos en edad escolar, selecciona "No aplica".</div>
     <div class="opts-col" style="margin-bottom:12px">
-      <button class="opt" data-g="transporte" data-v="coche propio de gasolina o diésel"><span class="opt-ico"><i class="ti ti-car"></i></span><span class="opt-lbl">Coche gasolina o diésel</span></button>
-      <button class="opt" data-g="transporte" data-v="coche eléctrico o híbrido"><span class="opt-ico"><i class="ti ti-plug"></i></span><span class="opt-lbl">Coche eléctrico o híbrido</span></button>
-      <button class="opt" data-g="transporte" data-v="transporte público (metro, bus, tren)"><span class="opt-ico"><i class="ti ti-bus"></i></span><span class="opt-lbl">Transporte público</span></button>
-      <button class="opt" data-g="transporte" data-v="a pie o en bicicleta"><span class="opt-ico"><i class="ti ti-walk"></i></span><span class="opt-lbl">A pie o en bicicleta</span></button>
-      <button class="opt" data-g="transporte" data-v="teletrabajo (no me desplazo o casi nada)"><span class="opt-ico"><i class="ti ti-device-laptop"></i></span><span class="opt-lbl">Teletrabajo</span><span class="opt-sub">No me desplazo o casi nada</span></button>
+      <button class="opt" data-g="tipoEducacion" data-v="no aplica (sin hijos en edad escolar)"><span class="opt-ico"><i class="ti ti-x"></i></span><span class="opt-lbl">No aplica</span></button>
+      <button class="opt" data-g="tipoEducacion" data-v="colegio público"><span class="opt-ico"><i class="ti ti-school"></i></span><span class="opt-lbl">Colegio público</span><span class="opt-sub">Sin cuotas de escolaridad</span></button>
+      <button class="opt" data-g="tipoEducacion" data-v="colegio concertado (cuota mensual baja)"><span class="opt-ico"><i class="ti ti-school"></i></span><span class="opt-lbl">Colegio concertado</span><span class="opt-sub">Cuota mensual baja</span></button>
+      <button class="opt" data-g="tipoEducacion" data-v="colegio privado (cuota mensual alta)"><span class="opt-ico"><i class="ti ti-building"></i></span><span class="opt-lbl">Colegio privado</span><span class="opt-sub">Cuota mensual alta</span></button>
+      <button class="opt" data-g="tipoEducacion" data-v="universidad pública"><span class="opt-ico"><i class="ti ti-certificate"></i></span><span class="opt-lbl">Universidad pública</span></button>
+      <button class="opt" data-g="tipoEducacion" data-v="universidad privada"><span class="opt-ico"><i class="ti ti-certificate"></i></span><span class="opt-lbl">Universidad privada</span></button>
     </div>
-    <div class="igroup"><label>Distancia aproximada al trabajo (km, ida)</label><input type="number" id="qDistancia" placeholder="Ej: 15" min="0"></div>
+    <div class="chk-list">
+      <div class="chk-row"><input type="checkbox" id="ed1" value="actividades extraescolares"><label for="ed1">Extraescolares (deporte, música, idiomas...)</label></div>
+      <div class="chk-row"><input type="checkbox" id="ed2" value="clases particulares o academia"><label for="ed2">Clases particulares o academia</label></div>
+      <div class="chk-row"><input type="checkbox" id="ed3" value="comedor escolar"><label for="ed3">Comedor escolar</label></div>
+      <div class="chk-row"><input type="checkbox" id="ed4" value="transporte escolar"><label for="ed4">Transporte escolar</label></div>
+      <div class="chk-row"><input type="checkbox" id="ed5" value="material escolar y libros"><label for="ed5">Material escolar y libros</label></div>
+    </div>
     <div class="nav-row"><button class="btn-back" onclick="qBack(6)"><i class="ti ti-arrow-left"></i></button><button class="btn-next" onclick="qNext(6)">Continuar <i class="ti ti-arrow-right"></i></button></div>
   </div>
 
-  <!-- Q7: Alimentación -->
   <div class="q-body" id="q7" style="display:none">
-    <div class="q-label">Paso 7 de 8 · Alimentación</div>
+    <div class="q-label">Paso 7 de 11 · Estilo de vida</div>
+    <div class="q-title">¿Cómo definiríais vuestro estilo de vida?</div>
+    <div class="q-hint">Sé honesto/a — es la pregunta que más personaliza el informe.</div>
+    <div class="opts-col">
+      <button class="opt" data-g="estiloVida" data-v="hogareño y tranquilo (cocinamos mucho, poco ocio fuera)"><span class="opt-ico"><i class="ti ti-home-heart"></i></span><span class="opt-lbl">Hogareño y tranquilo</span><span class="opt-sub">Casa, cocina propia, poco ocio fuera</span></button>
+      <button class="opt" data-g="estiloVida" data-v="activo y deportista (gimnasio, deporte frecuente)"><span class="opt-ico"><i class="ti ti-run"></i></span><span class="opt-lbl">Activo y deportista</span><span class="opt-sub">Gimnasio, actividades, deporte</span></button>
+      <button class="opt" data-g="estiloVida" data-v="social y salidas frecuentes (restaurantes, viajes, ocio exterior)"><span class="opt-ico"><i class="ti ti-confetti"></i></span><span class="opt-lbl">Social y con salidas</span><span class="opt-sub">Restaurantes, viajes, ocio exterior</span></button>
+      <button class="opt" data-g="estiloVida" data-v="mixto y equilibrado (salidas moderadas)"><span class="opt-ico"><i class="ti ti-adjust"></i></span><span class="opt-lbl">Mixto y equilibrado</span><span class="opt-sub">Algo de todo, sin excesos</span></button>
+      <button class="opt" data-g="estiloVida" data-v="ahorrativo y consciente (poco consumo, cuidamos los gastos)"><span class="opt-ico"><i class="ti ti-pig-money"></i></span><span class="opt-lbl">Ahorrativo y consciente</span><span class="opt-sub">Cuidamos mucho los gastos</span></button>
+    </div>
+    <div class="nav-row"><button class="btn-back" onclick="qBack(7)"><i class="ti ti-arrow-left"></i></button><button class="btn-next" onclick="qNext(7)">Continuar <i class="ti ti-arrow-right"></i></button></div>
+  </div>
+
+  <div class="q-body" id="q8" style="display:none">
+    <div class="q-label">Paso 8 de 11 · Ropa y moda</div>
+    <div class="q-title">¿Cómo describirías vuestro gasto en ropa?</div>
+    <div class="q-hint">La ropa es uno de los gastos más difíciles de estimar por ser irregular.</div>
+    <div class="opts-col">
+      <button class="opt" data-g="gastoRopa" data-v="muy bajo (solo cuando es imprescindible, menos de 50 euros mes de media)"><span class="opt-ico"><i class="ti ti-shirt"></i></span><span class="opt-lbl">Muy bajo</span><span class="opt-sub">Solo lo imprescindible · ~50€/mes</span></button>
+      <button class="opt" data-g="gastoRopa" data-v="moderado (renovamos temporadas, marcas asequibles, 50-150 euros mes de media)"><span class="opt-ico"><i class="ti ti-hanger"></i></span><span class="opt-lbl">Moderado</span><span class="opt-sub">Temporadas, marcas asequibles · ~100€/mes</span></button>
+      <button class="opt" data-g="gastoRopa" data-v="alto (compramos frecuente, marcas medias-altas, 150-300 euros mes de media)"><span class="opt-ico"><i class="ti ti-star"></i></span><span class="opt-lbl">Alto</span><span class="opt-sub">Compras frecuentes, marcas medias · ~200€/mes</span></button>
+      <button class="opt" data-g="gastoRopa" data-v="muy alto (moda premium frecuente, más de 300 euros mes de media)"><span class="opt-ico"><i class="ti ti-diamond"></i></span><span class="opt-lbl">Muy alto</span><span class="opt-sub">Moda premium frecuente · +300€/mes</span></button>
+    </div>
+    <div class="nav-row"><button class="btn-back" onclick="qBack(8)"><i class="ti ti-arrow-left"></i></button><button class="btn-next" onclick="qNext(8)">Continuar <i class="ti ti-arrow-right"></i></button></div>
+  </div>
+
+  <div class="q-body" id="q9" style="display:none">
+    <div class="q-label">Paso 9 de 11 · Transporte</div>
+    <div class="q-title">¿Cómo os desplazáis al trabajo?</div>
+    <div class="opts-col" style="margin-bottom:12px">
+      <button class="opt" data-g="transporte" data-v="coche propio de gasolina o diesel"><span class="opt-ico"><i class="ti ti-car"></i></span><span class="opt-lbl">Coche gasolina o diésel</span></button>
+      <button class="opt" data-g="transporte" data-v="coche electrico o hibrido"><span class="opt-ico"><i class="ti ti-plug"></i></span><span class="opt-lbl">Coche eléctrico o híbrido</span></button>
+      <button class="opt" data-g="transporte" data-v="transporte publico (metro, bus, tren)"><span class="opt-ico"><i class="ti ti-bus"></i></span><span class="opt-lbl">Transporte público</span></button>
+      <button class="opt" data-g="transporte" data-v="a pie o en bicicleta"><span class="opt-ico"><i class="ti ti-walk"></i></span><span class="opt-lbl">A pie o en bicicleta</span></button>
+      <button class="opt" data-g="transporte" data-v="teletrabajo (no me desplazo)"><span class="opt-ico"><i class="ti ti-device-laptop"></i></span><span class="opt-lbl">Teletrabajo</span></button>
+    </div>
+    <div class="igroup"><label>Distancia aproximada al trabajo (km, solo ida)</label><input type="number" id="qDistancia" placeholder="Ej: 15" min="0"></div>
+    <div class="nav-row"><button class="btn-back" onclick="qBack(9)"><i class="ti ti-arrow-left"></i></button><button class="btn-next" onclick="qNext(9)">Continuar <i class="ti ti-arrow-right"></i></button></div>
+  </div>
+
+  <div class="q-body" id="q10" style="display:none">
+    <div class="q-label">Paso 10 de 11 · Alimentación</div>
     <div class="q-title">¿Cómo gestionáis la alimentación?</div>
-    <div class="q-hint">Dónde compráis y con qué frecuencia coméis fuera define una parte grande del presupuesto familiar.</div>
     <div class="chk-list">
       <div class="chk-row"><input type="checkbox" id="sm1" value="Mercadona"><label for="sm1">Mercadona</label></div>
       <div class="chk-row"><input type="checkbox" id="sm2" value="Lidl"><label for="sm2">Lidl</label></div>
       <div class="chk-row"><input type="checkbox" id="sm3" value="Aldi"><label for="sm3">Aldi</label></div>
       <div class="chk-row"><input type="checkbox" id="sm4" value="Carrefour"><label for="sm4">Carrefour</label></div>
       <div class="chk-row"><input type="checkbox" id="sm5" value="Eroski"><label for="sm5">Eroski</label></div>
-      <div class="chk-row"><input type="checkbox" id="sm6" value="El Corte Inglés / Hipercor"><label for="sm6">El Corte Inglés / Hipercor</label></div>
+      <div class="chk-row"><input type="checkbox" id="sm6" value="El Corte Ingles / Hipercor"><label for="sm6">El Corte Inglés / Hipercor</label></div>
       <div class="chk-row"><input type="checkbox" id="sm7" value="Mercado local o tiendas de barrio"><label for="sm7">Mercado local / tiendas de barrio</label></div>
       <div class="chk-row"><input type="checkbox" id="sm8" value="Compra online"><label for="sm8">Compra online</label></div>
     </div>
-    <div class="igroup">
-      <label>¿Con qué frecuencia coméis o cenáis fuera de casa?</label>
-      <select id="qComerFuera">
-        <option value="">Selecciona...</option>
-        <option value="casi nunca (1-2 veces al mes)">Casi nunca (1-2 veces al mes)</option>
-        <option value="ocasionalmente (1-2 veces por semana)">Ocasionalmente (1-2 veces/semana)</option>
-        <option value="frecuentemente (3-4 veces por semana)">Frecuentemente (3-4 veces/semana)</option>
-        <option value="casi a diario">Casi a diario</option>
-      </select>
-    </div>
-    <div class="nav-row"><button class="btn-back" onclick="qBack(7)"><i class="ti ti-arrow-left"></i></button><button class="btn-next" onclick="qNext(7)">Continuar <i class="ti ti-arrow-right"></i></button></div>
+    <div class="igroup"><label>¿Con qué frecuencia coméis o cenáis fuera de casa?</label><select id="qComerFuera"><option value="">Selecciona...</option><option value="casi nunca (1-2 veces al mes)">Casi nunca (1-2 veces al mes)</option><option value="ocasionalmente (1-2 veces por semana)">Ocasionalmente (1-2 veces/semana)</option><option value="frecuentemente (3-4 veces por semana)">Frecuentemente (3-4 veces/semana)</option><option value="casi a diario">Casi a diario</option></select></div>
+    <div class="nav-row"><button class="btn-back" onclick="qBack(10)"><i class="ti ti-arrow-left"></i></button><button class="btn-next" onclick="qNext(10)">Continuar <i class="ti ti-arrow-right"></i></button></div>
   </div>
 
-  <!-- Q8: Ingresos -->
-  <div class="q-body" id="q8" style="display:none">
-    <div class="q-label">Paso 8 de 8 · Ingresos</div>
+  <div class="q-body" id="q11" style="display:none">
+    <div class="q-label">Paso 11 de 11 · Ingresos</div>
     <div class="q-title">¿Cuáles son los ingresos netos mensuales de vuestra familia?</div>
-    <div class="q-hint">Este dato permite calibrar todas las estimaciones a vuestro nivel económico real. Nadie más verá esta información.</div>
+    <div class="q-hint">Permite calibrar todas las estimaciones a vuestro nivel real. Nadie más verá esta información.</div>
     <div class="opts-col">
-      <button class="opt" data-g="ingresos" data-v="menos de 1.500€ netos al mes"><span class="opt-ico"><i class="ti ti-coin"></i></span><span class="opt-lbl">Menos de 1.500€</span></button>
-      <button class="opt" data-g="ingresos" data-v="entre 1.500€ y 2.500€ netos al mes"><span class="opt-ico"><i class="ti ti-coins"></i></span><span class="opt-lbl">1.500€ – 2.500€</span></button>
-      <button class="opt" data-g="ingresos" data-v="entre 2.500€ y 4.000€ netos al mes"><span class="opt-ico"><i class="ti ti-cash"></i></span><span class="opt-lbl">2.500€ – 4.000€</span></button>
-      <button class="opt" data-g="ingresos" data-v="entre 4.000€ y 6.000€ netos al mes"><span class="opt-ico"><i class="ti ti-moneybag"></i></span><span class="opt-lbl">4.000€ – 6.000€</span></button>
-      <button class="opt" data-g="ingresos" data-v="más de 6.000€ netos al mes"><span class="opt-ico"><i class="ti ti-trending-up"></i></span><span class="opt-lbl">Más de 6.000€</span></button>
+      <button class="opt" data-g="ingresos" data-v="menos de 1.500 euros netos al mes"><span class="opt-ico"><i class="ti ti-coin"></i></span><span class="opt-lbl">Menos de 1.500€</span></button>
+      <button class="opt" data-g="ingresos" data-v="entre 1.500 y 2.500 euros netos al mes"><span class="opt-ico"><i class="ti ti-coins"></i></span><span class="opt-lbl">1.500€ – 2.500€</span></button>
+      <button class="opt" data-g="ingresos" data-v="entre 2.500 y 4.000 euros netos al mes"><span class="opt-ico"><i class="ti ti-cash"></i></span><span class="opt-lbl">2.500€ – 4.000€</span></button>
+      <button class="opt" data-g="ingresos" data-v="entre 4.000 y 6.000 euros netos al mes"><span class="opt-ico"><i class="ti ti-moneybag"></i></span><span class="opt-lbl">4.000€ – 6.000€</span></button>
+      <button class="opt" data-g="ingresos" data-v="mas de 6.000 euros netos al mes"><span class="opt-ico"><i class="ti ti-trending-up"></i></span><span class="opt-lbl">Más de 6.000€</span></button>
     </div>
-    <div class="nav-row"><button class="btn-back" onclick="qBack(8)"><i class="ti ti-arrow-left"></i></button><button class="btn-next" onclick="submitQuestionnaire()"><i class="ti ti-sparkles"></i> Generar mi informe</button></div>
+    <div class="nav-row"><button class="btn-back" onclick="qBack(11)"><i class="ti ti-arrow-left"></i></button><button class="btn-next" onclick="submitQuestionnaire()"><i class="ti ti-sparkles"></i> Generar mi informe</button></div>
   </div>
 </div>
 
-<!-- LOADING -->
 <div class="page" id="pageLoading">
   <div class="loading-page">
     <div class="spinner"></div>
@@ -457,7 +398,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--gray-100);color:var(--gra
   </div>
 </div>
 
-<!-- REPORT -->
 <div class="page" id="pageReport">
   <div class="report-page">
     <div class="report-hdr">
@@ -475,11 +415,10 @@ body{font-family:'DM Sans',sans-serif;background:var(--gray-100);color:var(--gra
   </div>
 </div>
 
-<!-- MAIN (dashboard) -->
 <div class="page" id="pageMain">
   <div class="hdr">
     <div class="hdr-top">
-      <div class="logo">ahorri<span>.</span></div>
+      <div class="logo">Ahurus</div>
       <button onclick="startQuestionnaire()" style="background:rgba(255,255,255,.18);border:none;color:var(--white);border-radius:99px;padding:6px 14px;font-size:12px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;"><i class="ti ti-plus"></i> Nuevo análisis</button>
     </div>
     <div class="hdr-sub" id="mainGreeting">Bienvenido/a</div>
@@ -496,12 +435,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--gray-100);color:var(--gra
   </div>
 </div>
 
-<!-- PERFIL -->
 <div class="page" id="pagePerfil">
-  <div class="hdr">
-    <div class="hdr-top"><div class="logo">ahorri<span>.</span></div></div>
-    <div class="hdr-sub">Tu perfil</div>
-  </div>
+  <div class="hdr"><div class="hdr-top"><div class="logo">Ahurus</div></div><div class="hdr-sub">Tu perfil</div></div>
   <div class="perfil-page">
     <div class="perfil-avatar"><i class="ti ti-user"></i></div>
     <div class="perfil-nombre" id="perfilNombre">—</div>
@@ -518,12 +453,11 @@ body{font-family:'DM Sans',sans-serif;background:var(--gray-100);color:var(--gra
   </div>
 </div>
 
-<!-- ADMIN -->
 <div class="page" id="pageAdmin">
   <div class="admin-page">
     <div class="admin-hdr">
       <div style="display:flex;justify-content:space-between;align-items:center">
-        <div><div class="admin-hdr-title"><i class="ti ti-shield"></i> Panel de Admin</div><div class="admin-hdr-sub">Ahorri · Control total</div></div>
+        <div><div class="admin-hdr-title"><i class="ti ti-shield"></i> Panel Admin · Ahurus</div><div class="admin-hdr-sub">Control total de usuarios e informes</div></div>
         <button onclick="showPerfil()" style="background:rgba(255,255,255,.1);border:none;color:#fff;border-radius:99px;padding:5px 12px;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;"><i class="ti ti-arrow-left"></i> Volver</button>
       </div>
     </div>
@@ -536,333 +470,190 @@ body{font-family:'DM Sans',sans-serif;background:var(--gray-100);color:var(--gra
   </div>
 </div>
 
-<!-- MODAL INFORME ADMIN -->
 <div class="modal-overlay" id="modalOverlay" onclick="closeModal()">
   <div class="modal" onclick="event.stopPropagation()">
     <button class="modal-close" onclick="closeModal()"><i class="ti ti-x"></i></button>
-    <div class="modal-title" id="modalTitle">Informe</div>
+    <div class="modal-title" id="modalTitle"></div>
     <div class="modal-sub" id="modalSub"></div>
     <div id="modalContent"></div>
   </div>
 </div>
 
-</div><!-- /app -->
-
+</div>
 <script>
-// ─── CONFIG ──────────────────────────────────────────────────────────────────
-const API = '';  // mismo servidor
-let TOKEN = localStorage.getItem('ahorri_token') || '';
-let USER  = JSON.parse(localStorage.getItem('ahorri_user') || 'null');
-let Q_DATA = {};
+const API='';
+let TOKEN=localStorage.getItem('ahurus_token')||'';
+let USER=JSON.parse(localStorage.getItem('ahurus_user')||'null');
+let Q_DATA={};
+const TOTAL_STEPS=11;
 
-// ─── INIT ────────────────────────────────────────────────────────────────────
-window.addEventListener('load', () => {
-  if (TOKEN && USER) showMain();
-  else showPage('pageSplash');
-});
+window.addEventListener('load',()=>{if(TOKEN&&USER)showMain();else showPage('pageSplash');});
 
-// ─── PAGES ───────────────────────────────────────────────────────────────────
-function showPage(id) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  window.scrollTo(0,0);
+function showPage(id){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById(id).classList.add('active');window.scrollTo(0,0);}
+
+async function doRegister(){
+  const nombre=document.getElementById('regNombre').value.trim();
+  const email=document.getElementById('regEmail').value.trim();
+  const pass=document.getElementById('regPass').value;
+  const err=document.getElementById('registerErr');
+  err.style.display='none';
+  if(!nombre||!email||!pass){showErr(err,'Completa todos los campos');return;}
+  if(pass.length<6){showErr(err,'La contraseña debe tener al menos 6 caracteres');return;}
+  try{const r=await api('/api/register','POST',{nombre,email,password:pass});saveAuth(r);showMain();}catch(e){showErr(err,e.message);}
 }
 
-// ─── AUTH ────────────────────────────────────────────────────────────────────
-async function doRegister() {
-  const nombre = document.getElementById('regNombre').value.trim();
-  const email  = document.getElementById('regEmail').value.trim();
-  const pass   = document.getElementById('regPass').value;
-  const err    = document.getElementById('registerErr');
-  err.style.display = 'none';
-  if (!nombre || !email || !pass) { showErr(err, 'Completa todos los campos'); return; }
-  if (pass.length < 6) { showErr(err, 'La contraseña debe tener al menos 6 caracteres'); return; }
-  try {
-    const r = await api('/api/register', 'POST', { nombre, email, password: pass });
-    saveAuth(r);
-    showMain();
-  } catch(e) { showErr(err, e.message); }
+async function doLogin(){
+  const email=document.getElementById('loginEmail').value.trim();
+  const pass=document.getElementById('loginPass').value;
+  const err=document.getElementById('loginErr');
+  err.style.display='none';
+  try{const r=await api('/api/login','POST',{email,password:pass});saveAuth(r);showMain();}catch(e){showErr(err,e.message);}
 }
 
-async function doLogin() {
-  const email = document.getElementById('loginEmail').value.trim();
-  const pass  = document.getElementById('loginPass').value;
-  const err   = document.getElementById('loginErr');
-  err.style.display = 'none';
-  try {
-    const r = await api('/api/login', 'POST', { email, password: pass });
-    saveAuth(r);
-    showMain();
-  } catch(e) { showErr(err, e.message); }
-}
+function saveAuth(r){TOKEN=r.token;USER=r.usuario;localStorage.setItem('ahurus_token',TOKEN);localStorage.setItem('ahurus_user',JSON.stringify(USER));}
+function doLogout(){TOKEN='';USER=null;localStorage.removeItem('ahurus_token');localStorage.removeItem('ahurus_user');showPage('pageSplash');}
+function showErr(el,msg){el.textContent=msg;el.style.display='block';}
 
-function saveAuth(r) {
-  TOKEN = r.token; USER = r.usuario;
-  localStorage.setItem('ahorri_token', TOKEN);
-  localStorage.setItem('ahorri_user', JSON.stringify(USER));
-}
-
-function doLogout() {
-  TOKEN = ''; USER = null;
-  localStorage.removeItem('ahorri_token');
-  localStorage.removeItem('ahorri_user');
-  showPage('pageSplash');
-}
-
-function showErr(el, msg) { el.textContent = msg; el.style.display = 'block'; }
-
-// ─── MAIN / HISTORIAL ────────────────────────────────────────────────────────
-async function showMain() {
+async function showMain(){
   showPage('pageMain');
-  document.getElementById('mainGreeting').textContent = `Hola, ${USER?.nombre || ''} 👋`;
-  const informes = await api('/api/mis-informes');
+  document.getElementById('mainGreeting').textContent=`Hola, ${USER?.nombre||''} \uD83D\uDC4B`;
+  const informes=await api('/api/mis-informes');
   renderHistorial(informes);
 }
 
-function renderHistorial(informes) {
-  const list = document.getElementById('histList');
-  if (!informes.length) {
-    list.innerHTML = `<div class="hist-empty"><i class="ti ti-report-analytics"></i><p>Todavía no tienes ningún informe.<br>Pulsa "Nuevo análisis" para empezar.</p></div>`;
-    return;
-  }
-  list.innerHTML = informes.map(inf => `
-    <div class="hist-card" onclick="verInforme(${inf.id})">
-      <div class="hist-card-top">
-        <div class="hist-card-date">${formatDate(inf.created_at)}</div>
-        <div class="hist-card-saving">${inf.ahorro_estimado ? `Ahorro: ${inf.ahorro_estimado}€/mes` : ''}</div>
-      </div>
-      <div class="hist-card-preview">${inf.resumen?.substring(0,120) || 'Ver informe completo'}...</div>
-    </div>`).join('');
+function renderHistorial(informes){
+  const list=document.getElementById('histList');
+  if(!informes.length){list.innerHTML='<div class="hist-empty"><i class="ti ti-report-analytics"></i><p>Todavía no tienes ningún informe.<br>Pulsa "Nuevo análisis" para empezar.</p></div>';return;}
+  list.innerHTML=informes.map(inf=>`<div class="hist-card" onclick="verInforme(${inf.id})"><div class="hist-card-top"><div class="hist-card-date">${formatDate(inf.created_at)}</div><div class="hist-card-saving">${inf.ahorro_estimado?`Ahorro: ${inf.ahorro_estimado}€/mes`:''}</div></div><div class="hist-card-preview">${inf.resumen?.substring(0,120)||'Ver informe'}...</div></div>`).join('');
 }
 
-async function verInforme(id) {
-  const inf = await api(`/api/informe/${id}`);
-  mostrarInformeCompleto(inf.html_informe, inf.created_at, inf.ahorro_estimado);
-}
+async function verInforme(id){const inf=await api(`/api/informe/${id}`);mostrarInformeCompleto(inf.html_informe,inf.created_at,inf.ahorro_estimado);}
 
-function mostrarInformeCompleto(html, fecha, ahorro) {
-  document.getElementById('reportDate').textContent = fecha ? formatDate(fecha) : 'Informe generado';
-  document.getElementById('rshAmount').textContent = ahorro ? `${ahorro}€` : 'Ver informe';
-  document.getElementById('rshSub').textContent = ahorro ? 'potencial de ahorro mensual' : 'Tu análisis completo a continuación';
-  document.getElementById('reportBody').innerHTML = html;
+function mostrarInformeCompleto(html,fecha,ahorro){
+  document.getElementById('reportDate').textContent=fecha?formatDate(fecha):'Informe generado';
+  document.getElementById('rshAmount').textContent=ahorro?`${ahorro}€`:'Ver informe';
+  document.getElementById('rshSub').textContent=ahorro?'potencial de ahorro mensual':'Tu análisis completo';
+  document.getElementById('reportBody').innerHTML=html;
   buildChart(html);
   showPage('pageReport');
 }
 
-// ─── PERFIL ───────────────────────────────────────────────────────────────────
-async function showPerfil() {
+async function showPerfil(){
   showPage('pagePerfil');
-  document.getElementById('perfilNombre').textContent = USER?.nombre || '';
-  document.getElementById('perfilEmail').textContent = USER?.email || '';
-  if (USER?.isAdmin) {
-    document.getElementById('perfilAdminStat').style.display = 'flex';
-    document.getElementById('adminBtn').style.display = 'block';
-  }
-  const informes = await api('/api/mis-informes');
-  document.getElementById('perfilInformes').textContent = informes.length;
+  document.getElementById('perfilNombre').textContent=USER?.nombre||'';
+  document.getElementById('perfilEmail').textContent=USER?.email||'';
+  if(USER?.isAdmin){document.getElementById('perfilAdminStat').style.display='flex';document.getElementById('adminBtn').style.display='block';}
+  const informes=await api('/api/mis-informes');
+  document.getElementById('perfilInformes').textContent=informes.length;
 }
 
-// ─── CUESTIONARIO ────────────────────────────────────────────────────────────
-function startQuestionnaire() {
-  Q_DATA = {};
-  document.querySelectorAll('.opt').forEach(b => b.classList.remove('sel'));
-  document.querySelectorAll('input[type=checkbox]').forEach(c => c.checked = false);
-  document.querySelectorAll('#pageQ input[type=number]').forEach(i => i.value = '');
-  document.getElementById('qComunidad').value = '';
-  document.getElementById('qComerFuera').value = '';
-  showPage('pageQ');
-  showQ(1);
+function startQuestionnaire(){
+  Q_DATA={};
+  document.querySelectorAll('.opt').forEach(b=>b.classList.remove('sel'));
+  document.querySelectorAll('input[type=checkbox]').forEach(c=>c.checked=false);
+  document.querySelectorAll('#pageQ input[type=number]').forEach(i=>i.value='');
+  document.getElementById('qComunidad').value='';
+  document.getElementById('qComerFuera').value='';
+  showPage('pageQ');showQ(1);
 }
 
-function showQ(n) {
-  for(let i=1;i<=8;i++){
-    const el = document.getElementById('q'+i);
-    if(el) el.style.display = i===n ? 'block' : 'none';
-  }
-  const pct = ((n-1)/8*100);
-  document.getElementById('qProgress').style.width = pct+'%';
-  document.getElementById('qBadge').textContent = `Paso ${n} de 8`;
-  document.getElementById('qSub').textContent = ['','Dónde vives','Tu familia','Tu vivienda','Energía del hogar','Estilo de vida','Transporte','Alimentación','Ingresos'][n];
+function showQ(n){
+  for(let i=1;i<=TOTAL_STEPS;i++){const el=document.getElementById('q'+i);if(el)el.style.display=i===n?'block':'none';}
+  document.getElementById('qProgress').style.width=((n-1)/TOTAL_STEPS*100)+'%';
+  document.getElementById('qBadge').textContent=`Paso ${n} de ${TOTAL_STEPS}`;
+  const subs=['','Dónde vives','Tu familia','Tu vivienda','Energía del hogar','Tus seguros','Educación','Estilo de vida','Ropa y moda','Transporte','Alimentación','Ingresos'];
+  document.getElementById('qSub').textContent=subs[n]||'';
   window.scrollTo(0,0);
 }
 
-document.addEventListener('click', e => {
-  const btn = e.target.closest('.opt');
-  if(!btn || !btn.dataset.g) return;
-  document.querySelectorAll(`[data-g="${btn.dataset.g}"]`).forEach(b => b.classList.remove('sel'));
+document.addEventListener('click',e=>{
+  const btn=e.target.closest('.opt');
+  if(!btn||!btn.dataset.g)return;
+  document.querySelectorAll(`[data-g="${btn.dataset.g}"]`).forEach(b=>b.classList.remove('sel'));
   btn.classList.add('sel');
-  Q_DATA[btn.dataset.g] = btn.dataset.v;
+  Q_DATA[btn.dataset.g]=btn.dataset.v;
 });
 
-function qNext(n) {
-  if(n===1) {
-    if(!document.getElementById('qComunidad').value) { alert('Selecciona tu comunidad autónoma'); return; }
-    if(!Q_DATA.tamano) { alert('Selecciona el tamaño del municipio'); return; }
-    Q_DATA.comunidad = document.getElementById('qComunidad').value;
-  }
-  if(n===2) {
-    if(!Q_DATA.familia) { alert('Selecciona la composición familiar'); return; }
-    Q_DATA.personas = document.getElementById('qPersonas').value || '2';
-  }
-  if(n===3) {
-    if(!Q_DATA.tipoVivienda) { alert('Indica el tipo de vivienda'); return; }
-    if(!Q_DATA.situacionVivienda) { alert('Indica la situación de la vivienda'); return; }
-    Q_DATA.metrosVivienda = document.getElementById('qMetros').value || '80';
-  }
-  if(n===4 && !Q_DATA.sistemaEnergetico) { alert('Indica el sistema de calefacción'); return; }
-  if(n===5 && !Q_DATA.estiloVida) { alert('Selecciona tu estilo de vida'); return; }
-  if(n===6) {
-    if(!Q_DATA.transporte) { alert('Indica cómo te desplazas'); return; }
-    Q_DATA.distanciaTrabajo = document.getElementById('qDistancia').value ? document.getElementById('qDistancia').value+'km' : 'no indicada';
-  }
-  if(n===7) {
-    const sups = ['sm1','sm2','sm3','sm4','sm5','sm6','sm7','sm8'].filter(id => document.getElementById(id)?.checked).map(id => document.getElementById(id).value);
-    Q_DATA.supermercados = sups.length ? sups.join(', ') : 'no indicado';
-    Q_DATA.comerFuera = document.getElementById('qComerFuera').value || 'ocasionalmente';
-  }
+function qNext(n){
+  if(n===1){if(!document.getElementById('qComunidad').value){alert('Selecciona tu comunidad autónoma');return;}if(!Q_DATA.tamano){alert('Selecciona el tamaño del municipio');return;}Q_DATA.comunidad=document.getElementById('qComunidad').value;}
+  if(n===2){if(!Q_DATA.familia){alert('Selecciona la composición familiar');return;}Q_DATA.personas=document.getElementById('qPersonas').value||'2';}
+  if(n===3){if(!Q_DATA.tipoVivienda){alert('Indica el tipo de vivienda');return;}if(!Q_DATA.situacionVivienda){alert('Indica la situación de la vivienda');return;}Q_DATA.metrosVivienda=document.getElementById('qMetros').value||'80';}
+  if(n===4&&!Q_DATA.sistemaEnergetico){alert('Indica el sistema de calefacción');return;}
+  if(n===5){const segs=['sg1','sg2','sg3','sg4','sg5','sg6','sg7','sg8'].filter(id=>document.getElementById(id)?.checked).map(id=>document.getElementById(id).value);Q_DATA.seguros=segs.length?segs.join(', '):'ninguno';}
+  if(n===6){if(!Q_DATA.tipoEducacion){alert('Selecciona el tipo de educación');return;}const extras=['ed1','ed2','ed3','ed4','ed5'].filter(id=>document.getElementById(id)?.checked).map(id=>document.getElementById(id).value);Q_DATA.extrasEducacion=extras.length?extras.join(', '):'ninguno';}
+  if(n===7&&!Q_DATA.estiloVida){alert('Selecciona tu estilo de vida');return;}
+  if(n===8&&!Q_DATA.gastoRopa){alert('Indica tu nivel de gasto en ropa');return;}
+  if(n===9){if(!Q_DATA.transporte){alert('Indica cómo te desplazas');return;}Q_DATA.distanciaTrabajo=document.getElementById('qDistancia').value?document.getElementById('qDistancia').value+'km':'no indicada';}
+  if(n===10){const sups=['sm1','sm2','sm3','sm4','sm5','sm6','sm7','sm8'].filter(id=>document.getElementById(id)?.checked).map(id=>document.getElementById(id).value);Q_DATA.supermercados=sups.length?sups.join(', '):'no indicado';Q_DATA.comerFuera=document.getElementById('qComerFuera').value||'ocasionalmente';}
   showQ(n+1);
 }
 
-function qBack(n) { if(n>1) showQ(n-1); else showMain(); }
+function qBack(n){if(n>1)showQ(n-1);else showMain();}
 
-async function submitQuestionnaire() {
-  if(!Q_DATA.ingresos) { alert('Selecciona el rango de ingresos'); return; }
+async function submitQuestionnaire(){
+  if(!Q_DATA.ingresos){alert('Selecciona el rango de ingresos');return;}
   showPage('pageLoading');
-  try {
-    const r = await api('/api/generar-informe', 'POST', { respuestas: Q_DATA });
-    mostrarInformeCompleto(r.informe, new Date().toISOString(), extraerAhorroHtml(r.informe));
-  } catch(e) {
-    alert('Error al generar el informe: '+e.message);
-    showMain();
+  try{const r=await api('/api/generar-informe','POST',{respuestas:Q_DATA});mostrarInformeCompleto(r.informe,new Date().toISOString(),extraerAhorroHtml(r.informe));}
+  catch(e){alert('Error al generar el informe: '+e.message);showMain();}
+}
+
+function extraerAhorroHtml(html){const m=html.match(/data-total-ahorro="(\d+)"/);return m?parseInt(m[1]):0;}
+
+function buildChart(html){
+  const doc=new DOMParser().parseFromString(html,'text/html');
+  const cats=doc.querySelectorAll('.gasto-categoria');
+  if(!cats.length)return;
+  const data=[];
+  cats.forEach(c=>{const n=c.dataset.categoria;const i=parseInt(c.dataset.importe)||0;if(n&&i)data.push({n,i});});
+  if(!data.length)return;
+  const max=Math.max(...data.map(d=>d.i));
+  const colors=['#185FA5','#378ADD','#1D9E75','#EF9F27','#D85A30','#534AB7','#085041','#BA7517','#E24B4A','#6B7280','#1D9E75','#185FA5'];
+  const chartHtml=`<div style="margin:16px 0 24px"><div style="font-size:14px;font-weight:600;color:var(--gray-900);margin-bottom:12px;">📊 Distribución del gasto mensual</div>${data.map((d,i)=>`<div class="chart-bar-row"><div class="chart-bar-label">${d.n}</div><div class="chart-bar-outer"><div class="chart-bar-inner" style="width:${(d.i/max*100).toFixed(0)}%;background:${colors[i%colors.length]}"></div></div><div class="chart-bar-val">${d.i}€</div></div>`).join('')}</div>`;
+  const rb=document.getElementById('reportBody');
+  const h3=rb.querySelector('h3');
+  if(h3)h3.insertAdjacentHTML('beforebegin',chartHtml);
+}
+
+async function showAdmin(){showPage('pageAdmin');await adminTab('stats');}
+
+async function adminTab(tab){
+  document.querySelectorAll('.admin-tab').forEach((t,i)=>t.classList.toggle('active',['stats','users','reports'][i]===tab));
+  const content=document.getElementById('adminContent');
+  if(tab==='stats'){
+    const d=await api('/api/admin/estadisticas');
+    content.innerHTML=`<div class="stat-grid"><div class="stat-card"><div class="stat-card-label">Usuarios</div><div class="stat-card-val">${d.totalUsuarios||0}</div></div><div class="stat-card"><div class="stat-card-label">Informes</div><div class="stat-card-val">${d.totalInformes||0}</div></div></div><div class="admin-list-title">Últimos informes</div>${(d.ultimosInformes||[]).map(inf=>`<div class="admin-informe-card"><div class="aic-date">${formatDate(inf.created_at)} · ${inf.usuarios?.nombre||'—'}</div><div class="aic-saving">${inf.ahorro_estimado?`Ahorro: ${inf.ahorro_estimado}€/mes`:''}</div><div class="aic-preview">${inf.resumen?.substring(0,100)||''}...</div></div>`).join('')}`;
+  }
+  if(tab==='users'){
+    const users=await api('/api/admin/usuarios');
+    content.innerHTML=`<div class="admin-list-title">${users.length} usuarios</div>${users.map(u=>`<div class="admin-user-card" onclick="adminVerUsuario(${u.id},'${u.nombre}')"><div class="auc-top"><div class="auc-nombre">${u.nombre}</div>${u.es_admin?'<span class="auc-badge">Admin</span>':''}</div><div class="auc-email">${u.email}</div><div class="auc-meta">Registrado: ${formatDate(u.created_at)}</div></div>`).join('')}`;
+  }
+  if(tab==='reports'){
+    const d=await api('/api/admin/estadisticas');
+    content.innerHTML=`<div class="admin-list-title">Últimos informes</div>${(d.ultimosInformes||[]).map(inf=>`<div class="admin-informe-card"><div class="aic-date">${formatDate(inf.created_at)} · ${inf.usuarios?.nombre||'—'}</div><div class="aic-saving">${inf.ahorro_estimado?`Ahorro: ${inf.ahorro_estimado}€/mes`:''}</div><div class="aic-preview">${inf.resumen?.substring(0,120)||''}...</div></div>`).join('')}`;
   }
 }
 
-function extraerAhorroHtml(html) {
-  const m = html.match(/data-total-ahorro="(\d+)"/);
-  return m ? parseInt(m[1]) : 0;
-}
-
-// ─── GRÁFICO ─────────────────────────────────────────────────────────────────
-function buildChart(html) {
-  const parser = new DOMParser();
-  const doc = parser.parseFromString(html, 'text/html');
-  const cats = doc.querySelectorAll('.gasto-categoria');
-  if(!cats.length) return;
-  const data = [];
-  cats.forEach(c => {
-    const nombre = c.dataset.categoria;
-    const importe = parseInt(c.dataset.importe) || 0;
-    if(nombre && importe) data.push({nombre, importe});
-  });
-  if(!data.length) return;
-  const max = Math.max(...data.map(d=>d.importe));
-  const colors = ['#185FA5','#378ADD','#1D9E75','#EF9F27','#D85A30','#534AB7','#085041','#BA7517','#E24B4A','#6B7280'];
-  const chartHtml = `<div style="margin:16px 0 24px"><div style="font-size:14px;font-weight:600;color:var(--gray-900);margin-bottom:12px;">Distribución del gasto mensual</div>${data.map((d,i)=>`
-    <div class="chart-bar-row">
-      <div class="chart-bar-label">${d.nombre}</div>
-      <div class="chart-bar-outer"><div class="chart-bar-inner" style="width:${(d.importe/max*100).toFixed(0)}%;background:${colors[i%colors.length]}"></div></div>
-      <div class="chart-bar-val">${d.importe}€</div>
-    </div>`).join('')}</div>`;
-  const reportBody = document.getElementById('reportBody');
-  const firstH3 = reportBody.querySelector('h3');
-  if(firstH3) firstH3.insertAdjacentHTML('beforebegin', chartHtml);
-}
-
-// ─── ADMIN ───────────────────────────────────────────────────────────────────
-async function showAdmin() {
-  showPage('pageAdmin');
-  await adminTab('stats');
-}
-
-let currentAdminTab = 'stats';
-async function adminTab(tab) {
-  currentAdminTab = tab;
-  document.querySelectorAll('.admin-tab').forEach((t,i) => {
-    t.classList.toggle('active', ['stats','users','reports'][i] === tab);
-  });
-  const content = document.getElementById('adminContent');
-  if(tab==='stats') {
-    const d = await api('/api/admin/estadisticas');
-    content.innerHTML = `
-      <div class="stat-grid">
-        <div class="stat-card"><div class="stat-card-label">Usuarios</div><div class="stat-card-val">${d.totalUsuarios||0}</div></div>
-        <div class="stat-card"><div class="stat-card-label">Informes</div><div class="stat-card-val">${d.totalInformes||0}</div></div>
-      </div>
-      <div class="admin-list-title">Últimos informes generados</div>
-      ${(d.ultimosInformes||[]).map(inf=>`
-        <div class="admin-informe-card">
-          <div class="aic-date">${formatDate(inf.created_at)} · ${inf.usuarios?.nombre||'—'} (${inf.usuarios?.email||''})</div>
-          <div class="aic-saving">${inf.ahorro_estimado ? `Ahorro: ${inf.ahorro_estimado}€/mes` : ''}</div>
-          <div class="aic-preview">${inf.resumen?.substring(0,100)||''}...</div>
-        </div>`).join('')}`;
-  }
-  if(tab==='users') {
-    const users = await api('/api/admin/usuarios');
-    content.innerHTML = `
-      <div class="admin-list-title">${users.length} usuarios registrados</div>
-      ${users.map(u=>`
-        <div class="admin-user-card" onclick="adminVerUsuario(${u.id},'${u.nombre}')">
-          <div class="auc-top">
-            <div class="auc-nombre">${u.nombre}</div>
-            ${u.es_admin ? '<span class="auc-badge">Admin</span>' : ''}
-          </div>
-          <div class="auc-email">${u.email}</div>
-          <div class="auc-meta">Registrado: ${formatDate(u.created_at)}</div>
-        </div>`).join('')}`;
-  }
-  if(tab==='reports') {
-    const d = await api('/api/admin/estadisticas');
-    content.innerHTML = `
-      <div class="admin-list-title">Todos los informes</div>
-      ${(d.ultimosInformes||[]).map(inf=>`
-        <div class="admin-informe-card" style="cursor:pointer" onclick="adminVerInforme(${inf.id})">
-          <div class="aic-date">${formatDate(inf.created_at)} · ${inf.usuarios?.nombre||'—'}</div>
-          <div class="aic-saving">${inf.ahorro_estimado ? `Ahorro estimado: ${inf.ahorro_estimado}€/mes` : ''}</div>
-          <div class="aic-preview">${inf.resumen?.substring(0,120)||''}...</div>
-        </div>`).join('')}`;
-  }
-}
-
-async function adminVerUsuario(id, nombre) {
-  const informes = await api(`/api/admin/usuario/${id}/informes`);
-  document.getElementById('modalTitle').textContent = nombre;
-  document.getElementById('modalSub').textContent = `${informes.length} informes generados`;
-  document.getElementById('modalContent').innerHTML = informes.length
-    ? informes.map(inf=>`<div class="admin-informe-card" style="cursor:pointer;margin-bottom:8px" onclick="adminVerInformeHTML(\`${inf.html_informe?.replace(/`/g,'\\`')||''}\`,${inf.ahorro_estimado||0})"><div class="aic-date">${formatDate(inf.created_at)}</div><div class="aic-saving">${inf.ahorro_estimado?`Ahorro: ${inf.ahorro_estimado}€/mes`:''}</div><div class="aic-preview">${inf.resumen?.substring(0,100)||''}...</div></div>`).join('')
-    : '<p style="color:var(--gray-500);font-size:13px">Este usuario no tiene informes todavía.</p>';
+async function adminVerUsuario(id,nombre){
+  const informes=await api(`/api/admin/usuario/${id}/informes`);
+  document.getElementById('modalTitle').textContent=nombre;
+  document.getElementById('modalSub').textContent=`${informes.length} informes generados`;
+  document.getElementById('modalContent').innerHTML=informes.length?informes.map(inf=>`<div class="admin-informe-card" style="margin-bottom:8px"><div class="aic-date">${formatDate(inf.created_at)}</div><div class="aic-saving">${inf.ahorro_estimado?`Ahorro: ${inf.ahorro_estimado}€/mes`:''}</div><div class="aic-preview">${inf.resumen?.substring(0,100)||''}...</div></div>`).join(''):'<p style="color:var(--gray-500);font-size:13px">Sin informes todavía.</p>';
   document.getElementById('modalOverlay').classList.add('active');
 }
 
-function adminVerInformeHTML(html, ahorro) {
-  closeModal();
-  mostrarInformeCompleto(html, null, ahorro);
-}
+function closeModal(){document.getElementById('modalOverlay').classList.remove('active');}
 
-function closeModal() { document.getElementById('modalOverlay').classList.remove('active'); }
-
-// ─── UTILS ───────────────────────────────────────────────────────────────────
-async function api(endpoint, method='GET', body=null) {
-  const opts = { method, headers: { 'Content-Type':'application/json' } };
-  if(TOKEN) opts.headers['Authorization'] = `Bearer ${TOKEN}`;
-  if(body) opts.body = JSON.stringify(body);
-  const r = await fetch(API+endpoint, opts);
-  const data = await r.json();
-  if(!r.ok) throw new Error(data.error || 'Error del servidor');
+async function api(endpoint,method='GET',body=null){
+  const opts={method,headers:{'Content-Type':'application/json'}};
+  if(TOKEN)opts.headers['Authorization']=`Bearer ${TOKEN}`;
+  if(body)opts.body=JSON.stringify(body);
+  const r=await fetch(API+endpoint,opts);
+  const data=await r.json();
+  if(!r.ok)throw new Error(data.error||'Error del servidor');
   return data;
 }
 
-function formatDate(iso) {
-  if(!iso) return '';
-  return new Date(iso).toLocaleDateString('es-ES', { day:'2-digit', month:'long', year:'numeric' });
-}
+function formatDate(iso){if(!iso)return '';return new Date(iso).toLocaleDateString('es-ES',{day:'2-digit',month:'long',year:'numeric'});}
 </script>
 </body>
 </html>
- 
-
-  
-
-
-         
-    
-     
